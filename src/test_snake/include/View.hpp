@@ -1,23 +1,9 @@
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef VIEW_HPP
+#define VIEW_HPP
 
 #include <ncurses.h>
 
-#include <vector>
-
 #include "Model.hpp"
-
-#define WIN_INIT(time)       \
-  {                          \
-    initscr();               \
-    noecho();                \
-    cbreak();                \
-    nodelay(stdscr, true);   \
-    notimeout(stdscr, TRUE); \
-    curs_set(0);             \
-    keypad(stdscr, TRUE);    \
-    timeout(time);           \
-  }
 
 class SnakeView {
  public:
@@ -29,6 +15,7 @@ class SnakeView {
  private:
   int width, height;
   WINDOW* gameWin;
+  WINDOW* sideBarWin;
 };
 
-#endif  // VIEW_H
+#endif  // VIEW_HPP

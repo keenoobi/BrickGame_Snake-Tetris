@@ -3,8 +3,10 @@
 #include "../include/View.hpp"
 
 int main() {
-  SnakeModel model(10, 20);
-  SnakeView view(10, 20);
+  srand(time(0));
+  int width = 20, height = 20;
+  SnakeModel model(width, height);
+  SnakeView view(width, height);
   SnakeController controller(model, view);
   controller.run();
   return 0;

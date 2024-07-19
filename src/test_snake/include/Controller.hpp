@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef CONTROLLER_HPP
+#define CONTROLLER_HPP
 
 #include <chrono>
 #include <thread>
@@ -23,4 +23,4 @@ class SnakeController {
   long long lastUpdateTime;
 };
 
-#endif  // CONTROLLER_H
+#endif  // CONTROLLER_HPP

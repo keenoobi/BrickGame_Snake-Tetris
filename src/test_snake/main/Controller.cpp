@@ -1,7 +1,9 @@
 #include "../include/Controller.hpp"
 
 SnakeController::SnakeController(SnakeModel& model, SnakeView& view)
-    : model(model), view(view) {}
+    : model(model), view(view) {
+  lastUpdateTime = GetCurrentTimeInMilliseconds();
+}
 
 void SnakeController::run() {
   while (true) {
@@ -12,14 +14,16 @@ void SnakeController::run() {
       }
     } else {
       long long currentTime = GetCurrentTimeInMilliseconds();
-      if (currentTime - lastUpdateTime >= model.getSpeed()) {
+      int currentSpeed = model.isAccelerationOn() ? model.getAccelerationSpeed()
+                                                  : model.getSpeed();
+      if (currentTime - lastUpdateTime >= currentSpeed) {
         handleInput();
         model.moveSnake();
         view.draw(model);
         lastUpdateTime = currentTime;
       }
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    // std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 }
 
@@ -43,7 +47,13 @@ int SnakeController::handleInput() {
         if (model.getCurrentDirection() != Direction::LEFT)
           model.setCurrentDirection(Direction::RIGHT);
         break;
+      case ' ':
+        model.setAcceleration(true);
+        break;
     }
+    flushinp();
+  } else {
+    model.setAcceleration(false);
   }
   return ch;
 }
