@@ -9,6 +9,8 @@
 
 #define ENTER_KEY 10
 
+namespace s21 {
+
 class SnakeController {
  public:
   SnakeController(SnakeModel& model, SnakeView& view);
@@ -23,4 +25,5 @@ class SnakeController {
   long long lastUpdateTime;
 };
 
+}  // namespace s21
 #endif  // CONTROLLER_HPP

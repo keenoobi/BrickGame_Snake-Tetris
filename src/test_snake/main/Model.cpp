@@ -1,5 +1,7 @@
 #include "../include/Model.hpp"
 
+namespace s21 {
+
 SnakeModel::SnakeModel(int width, int height)
     : width(width),
       height(height),
@@ -110,7 +112,7 @@ void SnakeModel::handleFoodConsumption() {
   score++;
   if (score % 5 == 0 && level < 10) {
     level++;
-    speed -= 40;  // Increase speed with each level
+    speed -= 40;  // Увеличиваем скорость с каждым уровнем
   }
   generateFood();
 }
@@ -137,3 +139,5 @@ const std::vector<std::vector<int>>& SnakeModel::getGameBoard() const {
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
+
+}  // namespace s21

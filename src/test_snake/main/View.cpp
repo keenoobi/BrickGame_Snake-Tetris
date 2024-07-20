@@ -1,5 +1,7 @@
 #include "../include/View.hpp"
 
+namespace s21 {
+
 SnakeView::SnakeView(int width, int height) : width(width), height(height) {
   initscr();
   noecho();
@@ -50,3 +52,5 @@ void SnakeView::drawGameOver(const SnakeModel& model) {
   wrefresh(gameWin);
   wrefresh(sideBarWin);
 }
+
+}  // namespace s21

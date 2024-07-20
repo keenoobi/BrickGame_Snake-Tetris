@@ -1,5 +1,7 @@
 #include "../include/Controller.hpp"
 
+namespace s21 {
+
 SnakeController::SnakeController(SnakeModel& model, SnakeView& view)
     : model(model), view(view) {
   lastUpdateTime = GetCurrentTimeInMilliseconds();
@@ -64,3 +66,4 @@ long long SnakeController::GetCurrentTimeInMilliseconds() {
       now.time_since_epoch());
   return duration.count();
 }
+}  // namespace s21

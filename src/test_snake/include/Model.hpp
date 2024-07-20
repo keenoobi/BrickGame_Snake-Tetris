@@ -5,6 +5,8 @@
 #include <ctime>
 #include <vector>
 
+namespace s21 {
+
 enum class Direction { UP, DOWN, LEFT, RIGHT };
 
 struct Point {
@@ -56,5 +58,7 @@ class SnakeModel {
   Direction currentDirection;
   std::vector<std::vector<int>> gameBoard;
 };
+
+}  // namespace s21
 
 #endif  // MODEL_HPP

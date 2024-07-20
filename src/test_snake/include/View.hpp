@@ -5,6 +5,8 @@
 
 #include "Model.hpp"
 
+namespace s21 {
+
 class SnakeView {
  public:
   SnakeView(int width, int height);
@@ -17,5 +19,5 @@ class SnakeView {
   WINDOW* gameWin;
   WINDOW* sideBarWin;
 };
-
+}  // namespace s21
 #endif  // VIEW_HPP
