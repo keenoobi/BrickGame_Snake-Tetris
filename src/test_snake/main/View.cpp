@@ -12,15 +12,40 @@ SnakeView::SnakeView(int width, int height) : width(width), height(height) {
   notimeout(stdscr, TRUE);
   gameWin = newwin(height + 2, width + 2, 2, 2);
   sideBarWin = newwin(height + 2, width - 5, 2, width + 4);
+  startWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
+  pauseWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
+  gameOverWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
 }
 
 SnakeView::~SnakeView() {
+  delwin(startWin);
+  delwin(pauseWin);
+  delwin(gameOverWin);
   delwin(gameWin);
   delwin(sideBarWin);
   endwin();
 }
 
-void SnakeView::draw(const SnakeModel& model) {
+void SnakeView::drawStartScreen(const SnakeModel& model) {
+  if (model.getCurrentState() == GameState::START) {
+    box(startWin, 0, 0);
+    mvwprintw(startWin, getmaxx(startWin) / 2, getmaxy(startWin) / 2,
+              "Press Enter to start");
+    wrefresh(startWin);
+  }
+}
+
+void SnakeView::drawPauseScreen(const SnakeModel& model) {
+  if (model.getCurrentState() == GameState::PAUSE) {
+    box(pauseWin, 0, 0);
+    mvwprintw(pauseWin, 10, 5, "Game is paused");
+    mvwprintw(pauseWin, 10 + 2, 5, "Press P to resume");
+    wrefresh(pauseWin);
+  }
+}
+
+void SnakeView::drawGame(const SnakeModel& model) {
+  if (model.getCurrentState() != GameState::PLAYING) return;
   wclear(gameWin);
   box(gameWin, 0, 0);     // Draw a border around the window
   box(sideBarWin, 0, 0);  // Draw a border around the window
@@ -41,6 +66,25 @@ void SnakeView::draw(const SnakeModel& model) {
   mvwprintw(sideBarWin, 6, 2, "Speed: %d", model.getSpeed());
   wrefresh(gameWin);
   wrefresh(sideBarWin);
+}
+
+void SnakeView::draw(const SnakeModel& model) {
+  switch (model.getCurrentState()) {
+    case GameState::START:
+      drawStartScreen(model);
+      break;
+    case GameState::PLAYING:
+      drawGame(model);
+      break;
+    case GameState::PAUSE:
+      drawPauseScreen(model);
+      break;
+    case GameState::GAMEOVER:
+      drawGameOver(model);
+      break;
+    default:
+      break;
+  }
 }
 
 void SnakeView::drawGameOver(const SnakeModel& model) {

@@ -12,10 +12,16 @@ class SnakeView {
   SnakeView(int width, int height);
   ~SnakeView();
   void draw(const SnakeModel& model);
+  void drawGame(const SnakeModel& model);
+  void drawStartScreen(const SnakeModel& model);
+  void drawPauseScreen(const SnakeModel& model);
   void drawGameOver(const SnakeModel& model);
 
  private:
   int width, height;
+  WINDOW* startWin;
+  WINDOW* pauseWin;
+  WINDOW* gameOverWin;
   WINDOW* gameWin;
   WINDOW* sideBarWin;
 };

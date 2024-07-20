@@ -1,6 +1,7 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
+#include <chrono>
 #include <cstdlib>
 #include <ctime>
 #include <vector>
@@ -8,6 +9,8 @@
 namespace s21 {
 
 enum class Direction { UP, DOWN, LEFT, RIGHT };
+enum class GameState { START, PLAYING, GAMEOVER, PAUSE, EXIT };
+enum class Signals { NONE, UP, DOWN, RIGHT, LEFT, ESC, ENTER, PAUSE };
 
 struct Point {
   int x, y;
@@ -19,6 +22,7 @@ struct Point {
 
 class SnakeModel {
  public:
+  using action = void (SnakeModel::*)();
   SnakeModel(int width, int height);
   void resetGame();
   void moveSnake();
@@ -38,6 +42,20 @@ class SnakeModel {
   Direction getCurrentDirection() const;
   void setCurrentDirection(Direction);
 
+  void handleEvent(Signals);
+  GameState getCurrentState() const;
+  void setCurrentState(GameState);
+
+  void moveForward();
+  void moveUp();
+  void moveDown();
+  void moveRight();
+  void moveLeft();
+  void Start();
+  void Exit();
+  void Pause();
+  void GameOver();
+
  private:
   void generateFood();
   Point calculateNewHead(const Point& head);
@@ -45,6 +63,9 @@ class SnakeModel {
   bool isCollisionWithBody(const Point& newHead);
   void handleFoodConsumption();
   void updateGameBoard();
+  static long long GetCurrentTimeInMilliseconds();
+
+  long long lastUpdateTime;
 
   std::vector<Point> snake;
   Point food;
@@ -57,6 +78,20 @@ class SnakeModel {
   bool acceleration;
   Direction currentDirection;
   std::vector<std::vector<int>> gameBoard;
+
+  GameState currentState;
+
+  action fsm_table[4][8] = {
+      {nullptr, nullptr, nullptr, nullptr, nullptr, &SnakeModel::Exit,
+       &SnakeModel::Start, nullptr},
+      {&SnakeModel::moveForward, &SnakeModel::moveUp, &SnakeModel::moveDown,
+       &SnakeModel::moveRight, &SnakeModel::moveLeft, &SnakeModel::Exit,
+       nullptr, &SnakeModel::Pause},
+      {&SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::GameOver,
+       &SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::Exit,
+       &SnakeModel::Start, &SnakeModel::GameOver},
+      {nullptr, nullptr, nullptr, nullptr, nullptr, &SnakeModel::Exit, nullptr,
+       &SnakeModel::Pause}};
 };
 
 }  // namespace s21

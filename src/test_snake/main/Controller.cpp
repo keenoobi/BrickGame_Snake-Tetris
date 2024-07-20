@@ -4,66 +4,70 @@ namespace s21 {
 
 SnakeController::SnakeController(SnakeModel& model, SnakeView& view)
     : model(model), view(view) {
-  lastUpdateTime = GetCurrentTimeInMilliseconds();
+  // lastUpdateTime = GetCurrentTimeInMilliseconds();
 }
 
 void SnakeController::run() {
-  while (true) {
-    if (model.isGameOver()) {
-      view.drawGameOver(model);
-      if (handleInput() == ENTER_KEY) {
-        model.resetGame();
-      }
-    } else {
-      long long currentTime = GetCurrentTimeInMilliseconds();
-      int currentSpeed = model.isAccelerationOn() ? model.getAccelerationSpeed()
-                                                  : model.getSpeed();
-      if (currentTime - lastUpdateTime >= currentSpeed) {
-        handleInput();
-        model.moveSnake();
-        view.draw(model);
-        lastUpdateTime = currentTime;
-      }
-    }
-    // std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  // view.draw(model);
+
+  while (model.getCurrentState() != GameState::EXIT) {
+    Signals signal = handleInput();
+    // if (signal == Signals::PAUSE) printf("Pause1\n");
+    model.handleEvent(signal);
+    // if (signal == Signals::PAUSE) printf("Pause2\n");
+    view.draw(model);
+    // if (signal == Signals::PAUSE) printf("\nPause3\n");
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
+
+  // if (model.isGameOver()) {
+  //   view.drawGameOver(model);
+  //   if (handleInput() == ENTER_KEY) {
+  //     model.resetGame();
+  //   }
+  // } else {
+  //   long long currentTime = GetCurrentTimeInMilliseconds();
+  //   int currentSpeed = model.isAccelerationOn() ?
+  //   model.getAccelerationSpeed()
+  //                                               : model.getSpeed();
+  //   if (currentTime - lastUpdateTime >= currentSpeed) {
+  //     handleInput();
+  //     model.moveSnake();
+  //     view.draw(model);
+  //     lastUpdateTime = currentTime;
+  //   }
+  // }
 }
 
-int SnakeController::handleInput() {
-  int ch = getch();
-  if (ch != ERR) {
-    switch (ch) {
+Signals SnakeController::handleInput() {
+  int key = getch();
+  Signals sig = Signals::NONE;
+  if (key != ERR) {
+    switch (key) {
       case KEY_UP:
-        if (model.getCurrentDirection() != Direction::DOWN)
-          model.setCurrentDirection(Direction::UP);
+        sig = Signals::UP;
         break;
       case KEY_DOWN:
-        if (model.getCurrentDirection() != Direction::UP)
-          model.setCurrentDirection(Direction::DOWN);
+        sig = Signals::DOWN;
         break;
       case KEY_LEFT:
-        if (model.getCurrentDirection() != Direction::RIGHT)
-          model.setCurrentDirection(Direction::LEFT);
+        sig = Signals::LEFT;
         break;
       case KEY_RIGHT:
-        if (model.getCurrentDirection() != Direction::LEFT)
-          model.setCurrentDirection(Direction::RIGHT);
+        sig = Signals::RIGHT;
         break;
-      case ' ':
-        model.setAcceleration(true);
+      case ENTER_KEY:
+        sig = Signals::ENTER;
         break;
+      case 'p':
+        sig = Signals::PAUSE;
+        break;
+      case ESC_KEY:
+        sig = Signals::ESC;
     }
-    flushinp();
-  } else {
-    model.setAcceleration(false);
   }
-  return ch;
+  return sig;
 }
 
-long long SnakeController::GetCurrentTimeInMilliseconds() {
-  auto now = std::chrono::system_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-      now.time_since_epoch());
-  return duration.count();
-}
 }  // namespace s21
