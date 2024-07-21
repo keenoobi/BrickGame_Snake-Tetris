@@ -7,7 +7,7 @@ int main() {
   int width = 20, height = 20;
   s21::SnakeModel model(width, height);
   s21::SnakeView view(width, height);
-  s21::SnakeController controller(model, view);
+  s21::Controller controller(model, view);
   controller.run();
   return 0;
 }

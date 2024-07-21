@@ -5,6 +5,9 @@
 
 #include "Model.hpp"
 
+#define ENTER_KEY 10
+#define ESC_KEY 27
+
 namespace s21 {
 
 class SnakeView {
@@ -16,6 +19,7 @@ class SnakeView {
   void drawStartScreen(const SnakeModel& model);
   void drawPauseScreen(const SnakeModel& model);
   void drawGameOver(const SnakeModel& model);
+  Signals handleInput();
 
  private:
   int width, height;

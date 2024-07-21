@@ -26,11 +26,41 @@ SnakeView::~SnakeView() {
   endwin();
 }
 
+Signals SnakeView::handleInput() {
+  int key = getch();
+  Signals sig = Signals::NONE;
+  if (key != ERR) {
+    switch (key) {
+      case KEY_UP:
+        sig = Signals::UP;
+        break;
+      case KEY_DOWN:
+        sig = Signals::DOWN;
+        break;
+      case KEY_LEFT:
+        sig = Signals::LEFT;
+        break;
+      case KEY_RIGHT:
+        sig = Signals::RIGHT;
+        break;
+      case ENTER_KEY:
+        sig = Signals::ENTER;
+        break;
+      case 'p':
+        sig = Signals::PAUSE;
+        break;
+      case ESC_KEY:
+        sig = Signals::ESC;
+        break;
+    }
+  }
+  return sig;
+}
+
 void SnakeView::drawStartScreen(const SnakeModel& model) {
   if (model.getCurrentState() == GameState::START) {
     box(startWin, 0, 0);
-    mvwprintw(startWin, getmaxx(startWin) / 2, getmaxy(startWin) / 2,
-              "Press Enter to start");
+    mvwprintw(startWin, 10, 8, "Press Enter to start");
     wrefresh(startWin);
   }
 }
@@ -47,6 +77,7 @@ void SnakeView::drawPauseScreen(const SnakeModel& model) {
 void SnakeView::drawGame(const SnakeModel& model) {
   if (model.getCurrentState() != GameState::PLAYING) return;
   wclear(gameWin);
+  wclear(sideBarWin);
   box(gameWin, 0, 0);     // Draw a border around the window
   box(sideBarWin, 0, 0);  // Draw a border around the window
 
@@ -88,13 +119,12 @@ void SnakeView::draw(const SnakeModel& model) {
 }
 
 void SnakeView::drawGameOver(const SnakeModel& model) {
-  wclear(gameWin);
-  wclear(sideBarWin);
-  wprintw(gameWin, "Game Over! Score: %d  Level: %d\n", model.getScore(),
-          model.getLevel());
-  wprintw(gameWin, "Start over? (Press Enter)\n");
-  wrefresh(gameWin);
-  wrefresh(sideBarWin);
+  box(gameOverWin, 0, 0);
+  mvwprintw(gameOverWin, 8, 12, "Game Over!");
+  mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", model.getScore(),
+            model.getLevel());
+  mvwprintw(gameOverWin, 12, 5, "Start over? (Press Enter)");
+  wrefresh(gameOverWin);
 }
 
 }  // namespace s21

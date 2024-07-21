@@ -26,7 +26,6 @@ class SnakeModel {
   SnakeModel(int width, int height);
   void resetGame();
   void moveSnake();
-  bool isGameOver() const;
   int getScore() const;
   int getLevel() const;
   int getSpeed() const;
@@ -40,6 +39,7 @@ class SnakeModel {
 
   const Point& getFood() const;
   Direction getCurrentDirection() const;
+  bool CurrentDirectionIsNot(Direction) const;
   void setCurrentDirection(Direction);
 
   void handleEvent(Signals);
