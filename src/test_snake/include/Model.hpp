@@ -6,11 +6,10 @@
 #include <ctime>
 #include <vector>
 
-namespace s21 {
+#include "BaseModel.hpp"
+// #include "data.h"
 
-enum class Direction { UP, DOWN, LEFT, RIGHT };
-enum class GameState { START, PLAYING, GAMEOVER, PAUSE, EXIT };
-enum class Signals { NONE, UP, DOWN, RIGHT, LEFT, ESC, ENTER, PAUSE };
+namespace s21 {
 
 struct Point {
   int x, y;
@@ -20,12 +19,13 @@ struct Point {
   }
 };
 
-class SnakeModel {
+class SnakeModel : public BrickGame {
  public:
   using action = void (SnakeModel::*)();
-  SnakeModel(int width, int height);
-  void resetGame();
+  SnakeModel(int width = 20, int height = 20);
+  void resetGame() override;
   void moveSnake();
+  // GameInfo_t getData() const override;
   int getScore() const;
   int getLevel() const;
   int getSpeed() const;
@@ -35,15 +35,15 @@ class SnakeModel {
   void setAcceleration(bool);
 
   const std::vector<Point>& getSnake() const;
-  const std::vector<std::vector<int>>& getGameBoard() const;
+  const std::vector<std::vector<int>>& getGameBoard() const override;
 
   const Point& getFood() const;
   Direction getCurrentDirection() const;
   bool CurrentDirectionIsNot(Direction) const;
   void setCurrentDirection(Direction);
 
-  void handleEvent(Signals);
-  GameState getCurrentState() const;
+  void handleEvent(Signals) override;
+  GameState getCurrentState() const override;
   void setCurrentState(GameState);
 
   void moveForward();

@@ -2,21 +2,34 @@
 
 namespace s21 {
 
-Controller::Controller(SnakeModel& model, SnakeView& view)
-    : model(model), view(view) {
-  // lastUpdateTime = GetCurrentTimeInMilliseconds();
-}
+Controller::Controller() : model(nullptr) {}
 
-void Controller::run() {
-  // view.draw(model);
-
-  while (model.getCurrentState() != GameState::EXIT) {
-    Signals signal = view.handleInput();
-    model.handleEvent(signal);
-    view.draw(model);
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+void Controller::setGame(MenuState state) {
+  switch (state) {
+    case MenuState::SNAKE_GAME:
+      model = std::make_unique<SnakeModel>();
+      break;
+    case MenuState::TETRIS_GAME:
+      // model = std::make_unique<TetrisModel>();
+    default:
+      break;
   }
 }
+// GameData Controller::getData() { model->getData(); }
+std::unique_ptr<BrickGame>& Controller::GetModel() { return model; }
+GameState Controller::GetCurrentGameState() { return model->getCurrentState(); }
+void Controller::GameProcessing(Signals signal) { model->handleEvent(signal); }
+
+// void Controller::run() {
+//   // view.draw(model);
+
+//   while (model.getCurrentState() != GameState::EXIT) {
+//     Signals signal = view.SignalProcessing();
+//     model.handleEvent(signal);
+//     view.draw(model);
+
+//     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+//   }
+// }
 
 }  // namespace s21
