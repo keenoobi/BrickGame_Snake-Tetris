@@ -16,7 +16,11 @@ void Controller::setGame(MenuState state) {
       break;
   }
 }
-// GameData Controller::getData() { model->getData(); }
+void Controller::getData(GameInfo_t& game) {
+  if (model != nullptr) {
+    model->GetData(game);
+  }
+}
 std::unique_ptr<BrickGame>& Controller::GetModel() { return model; }
 GameState Controller::GetCurrentGameState() { return model->getCurrentState(); }
 void Controller::GameProcessing(Signals signal) { model->handleEvent(signal); }

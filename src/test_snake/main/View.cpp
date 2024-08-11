@@ -2,13 +2,29 @@
 
 namespace s21 {
 
+#define ADD_BLOCK(win, row, col, x)                                         \
+  mvwaddch((win), (row) + 1, (col)*2 + 1, ' ' | A_REVERSE | COLOR_PAIR(x)); \
+  mvwaddch((win), (row) + 1, (col)*2 + 2, ' ' | A_REVERSE | COLOR_PAIR(x))
+
+#define ADD_EMPTY(win, row, col)                \
+  mvwaddch((win), (row) + 1, (col)*2 + 1, ' '); \
+  mvwaddch((win), (row) + 1, (col)*2 + 2, ' ')
+
 View::View(int width, int height)
     : width(width),
       height(height),
       signal(Signals::NONE),
       state(MenuState::MENU),
       key(0) {
+  game = {};
   controller = {};
+  NcursesInit();
+  WindowsInit();
+  InitColors();
+  MemoryAllocation();
+}
+
+void View::NcursesInit() {
   initscr();
   noecho();
   cbreak();
@@ -16,12 +32,49 @@ View::View(int width, int height)
   keypad(stdscr, TRUE);
   nodelay(stdscr, TRUE);
   notimeout(stdscr, TRUE);
+}
+
+void View::WindowsInit() {
   menuWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
   gameWin = newwin(height + 2, width + 2, 2, 2);
   sideBarWin = newwin(height + 2, width - 5, 2, width + 4);
   startWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
   pauseWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
   gameOverWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
+}
+
+void View::InitColors(void) {
+  start_color();
+
+  init_pair(1, COLOR_CYAN, COLOR_BLACK);
+  init_pair(2, COLOR_BLUE, COLOR_BLACK);
+  init_pair(3, COLOR_WHITE, COLOR_BLACK);
+  init_pair(4, COLOR_YELLOW, COLOR_BLACK);
+  init_pair(5, COLOR_GREEN, COLOR_BLACK);
+  init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
+  init_pair(7, COLOR_RED, COLOR_BLACK);
+}
+
+void View::MemoryAllocation() {
+  game.field = new int *[height]();
+  for (int i = 0; i < height; ++i) {
+    game.field[i] = new int[width]();
+  }
+  game.next = new int *[4]();
+  for (int i = 0; i < 4; ++i) {
+    game.next[i] = new int[4]();
+  }
+}
+
+void View::MemoryDeallocation() {
+  for (int i = 0; i < height; ++i) {
+    delete[] game.field[i];
+  }
+  delete[] game.field;
+  for (int i = 0; i < 4; ++i) {
+    delete[] game.next[i];
+  }
+  delete[] game.next;
 }
 
 View::~View() {
@@ -31,6 +84,7 @@ View::~View() {
   delwin(gameOverWin);
   delwin(gameWin);
   delwin(sideBarWin);
+  MemoryDeallocation();
 }
 
 void View::MenuProcessing() {
@@ -59,7 +113,8 @@ void View::StartSnakeGame() {
   while (controller.GetCurrentGameState() != GameState::EXIT) {
     SignalProcessing();
     controller.GameProcessing(signal);
-    draw(controller.GetModel());
+    controller.getData(game);
+    draw(game);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
   state = MenuState::MENU;
@@ -149,16 +204,16 @@ void View::SignalProcessing() {
   }
 }
 
-void View::drawStartScreen(const std::unique_ptr<BrickGame> &model) {
-  if (model->getCurrentState() == GameState::START) {
+void View::drawStartScreen(const GameState &state) {
+  if (state == GameState::START) {
     box(startWin, 0, 0);
     mvwprintw(startWin, 10, 8, "Press Enter to start");
     wrefresh(startWin);
   }
 }
 
-void View::drawPauseScreen(const std::unique_ptr<BrickGame> &model) {
-  if (model->getCurrentState() == GameState::PAUSE) {
+void View::drawPauseScreen(const GameState &state) {
+  if (state == GameState::PAUSE) {
     box(pauseWin, 0, 0);
     mvwprintw(pauseWin, 10, 5, "Game is paused");
     mvwprintw(pauseWin, 10 + 2, 5, "Press P to resume");
@@ -166,56 +221,55 @@ void View::drawPauseScreen(const std::unique_ptr<BrickGame> &model) {
   }
 }
 
-void View::drawGame(const std::unique_ptr<BrickGame> &model) {
-  if (model->getCurrentState() != GameState::PLAYING) return;
+void View::drawGame(const GameInfo_t &game) {
+  // if (model->getCurrentState() != GameState::PLAYING) return;
   // wclear(gameWin);
   // wclear(sideBarWin);
   box(gameWin, 0, 0);     // Draw a border around the window
   box(sideBarWin, 0, 0);  // Draw a border around the window
-  char symbol = 0;
+  // char symbol = 0;
 
   for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      // if (model->getGameBoard()[i][j]) {
-      symbol = (model->getGameBoard()[i][j] == 1)   ? 'O'
-               : (model->getGameBoard()[i][j] == 2) ? '*'
-                                                    : ' ';
-      mvwprintw(gameWin, i + 1, j + 1, "%c", symbol);
-      // }
+    for (int j = 0; j < width - 10; j++) {
+      if (game.field[i][j]) {
+        ADD_BLOCK(gameWin, i, j, game.field[i][j]);
+      } else {
+        ADD_EMPTY(gameWin, i, j);
+      }
     }
   }
 
-  mvwprintw(sideBarWin, 2, 2, "Score: %d", model->getScore());
-  mvwprintw(sideBarWin, 4, 2, "Level: %d", model->getLevel());
-  mvwprintw(sideBarWin, 6, 2, "Speed: %d", model->getSpeed());
+  mvwprintw(sideBarWin, 2, 2, "Score: %d", game.score);
+  mvwprintw(sideBarWin, 4, 2, "Level: %d", game.level);
+  mvwprintw(sideBarWin, 6, 2, "Speed: %d", game.speed);
   wrefresh(gameWin);
   wrefresh(sideBarWin);
 }
 
-void View::draw(const std::unique_ptr<BrickGame> &model) {
-  switch (model->getCurrentState()) {
+void View::draw(const GameInfo_t &game) {
+  GameState state = controller.GetCurrentGameState();
+  switch (state) {
     case GameState::START:
-      drawStartScreen(model);
+      drawStartScreen(state);
       break;
     case GameState::PLAYING:
-      drawGame(model);
+      drawGame(game);
       break;
     case GameState::PAUSE:
-      drawPauseScreen(model);
+      drawPauseScreen(state);
       break;
     case GameState::GAMEOVER:
-      drawGameOver(model);
+      drawGameOver(game);
       break;
     default:
       break;
   }
 }
 
-void View::drawGameOver(const std::unique_ptr<BrickGame> &model) {
+void View::drawGameOver(const GameInfo_t &game) {
   box(gameOverWin, 0, 0);
   mvwprintw(gameOverWin, 8, 12, "Game Over!");
-  mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", model->getScore(),
-            model->getLevel());
+  mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", game.score, game.level);
   mvwprintw(gameOverWin, 12, 5, "Start over? (Press Enter)");
   wrefresh(gameOverWin);
 }

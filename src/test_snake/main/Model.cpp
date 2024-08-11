@@ -9,6 +9,7 @@ SnakeModel::SnakeModel(int width, int height)
       score(0),
       level(1),
       speed(300),
+      hasmoved(false),
       accelerationSpeed(100),
       acceleration(false),
       gameBoard(height, std::vector<int>(width, 0)),
@@ -32,6 +33,17 @@ void SnakeModel::resetGame() {
   currentDirection = Direction::LEFT;
   currentState = GameState::START;
   updateGameBoard();
+}
+
+void SnakeModel::GetData(GameInfo_t& game) const {
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      game.field[i][j] = gameBoard[i][j];
+    }
+  }
+  game.score = score;
+  game.level = level;
+  game.speed = speed;
 }
 
 void SnakeModel::handleEvent(Signals signal) {
@@ -109,7 +121,7 @@ bool SnakeModel::isCollisionWithBody(const Point& newHead) {
 
 void SnakeModel::handleFoodConsumption() {
   score++;
-  if (score % 5 == 0 && level < 10) {
+  if (score % 5 == 0 && level < 10 && speed) {
     level++;
     speed -= 40;  // Увеличиваем скорость с каждым уровнем
   }
@@ -119,9 +131,9 @@ void SnakeModel::handleFoodConsumption() {
 void SnakeModel::updateGameBoard() {
   gameBoard = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
   for (const auto& part : snake) {
-    gameBoard[part.y][part.x] = 1;  // Змейка будет представлена 1
+    gameBoard[part.y][part.x] = 5;  // Змейка будет представлена 1
   }
-  gameBoard[food.y][food.x] = 2;  // Еда будет представлена 2
+  gameBoard[food.y][food.x] = 7;  // Еда будет представлена 2
 }
 
 long long SnakeModel::GetCurrentTimeInMilliseconds() {
@@ -134,9 +146,9 @@ long long SnakeModel::GetCurrentTimeInMilliseconds() {
 int SnakeModel::getScore() const { return score; }
 int SnakeModel::getLevel() const { return level; }
 int SnakeModel::getSpeed() const { return speed; }
-int SnakeModel::getAccelerationSpeed() const { return accelerationSpeed; }
-bool SnakeModel::isAccelerationOn() const { return acceleration; }
-void SnakeModel::setAcceleration(bool status) { acceleration = status; }
+// int SnakeModel::getAccelerationSpeed() const { return accelerationSpeed; }
+// bool SnakeModel::isAccelerationOn() const { return acceleration; }
+// void SnakeModel::setAcceleration(bool status) { acceleration = status; }
 const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
 const std::vector<std::vector<int>>& SnakeModel::getGameBoard() const {
   return gameBoard;
@@ -156,41 +168,46 @@ void SnakeModel::moveForward() {
   if (currentTime - lastUpdateTime >= speed) {
     moveSnake();
     lastUpdateTime = currentTime;
+    hasmoved = true;
   }
 }
 
 void SnakeModel::moveUp() {
-  if (CurrentDirectionIsNot(Direction::DOWN)) {
-    if (CurrentDirectionIsNot(Direction::UP))
+  if (hasmoved && CurrentDirectionIsNot(Direction::DOWN)) {
+    if (CurrentDirectionIsNot(Direction::UP)) {
       setCurrentDirection(Direction::UP);
-    else
+      hasmoved = false;
+    } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveDown() {
-  if (CurrentDirectionIsNot(Direction::UP)) {
-    if (CurrentDirectionIsNot(Direction::DOWN))
+  if (hasmoved && CurrentDirectionIsNot(Direction::UP)) {
+    if (CurrentDirectionIsNot(Direction::DOWN)) {
       setCurrentDirection(Direction::DOWN);
-    else
+      hasmoved = false;
+    } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveRight() {
-  if (CurrentDirectionIsNot(Direction::LEFT)) {
-    if (CurrentDirectionIsNot(Direction::RIGHT))
+  if (hasmoved && CurrentDirectionIsNot(Direction::LEFT)) {
+    if (CurrentDirectionIsNot(Direction::RIGHT)) {
       setCurrentDirection(Direction::RIGHT);
-    else
+      hasmoved = false;
+    } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveLeft() {
-  if (CurrentDirectionIsNot(Direction::RIGHT)) {
-    if (CurrentDirectionIsNot(Direction::LEFT))
+  if (hasmoved && CurrentDirectionIsNot(Direction::RIGHT)) {
+    if (CurrentDirectionIsNot(Direction::LEFT)) {
       setCurrentDirection(Direction::LEFT);
-    else
+      hasmoved = false;
+    } else
       moveSnake();
   }
 }

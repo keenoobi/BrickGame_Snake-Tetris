@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "Model.hpp"
+#include "data.h"
 // #include "View.hpp"
 // #include "baseModel.hpp"
 
@@ -15,7 +16,7 @@ class Controller {
  public:
   Controller();
   void setGame(MenuState state);
-  // GameData getData();
+  void getData(GameInfo_t& game);
   GameState GetCurrentGameState();
   std::unique_ptr<BrickGame>& GetModel();
   // void run();

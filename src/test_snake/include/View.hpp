@@ -17,11 +17,16 @@ class View {
  public:
   View(int width = 20, int height = 20);
   ~View();
-  void draw(const std::unique_ptr<BrickGame> &model);
-  void drawGame(const std::unique_ptr<BrickGame> &model);
-  void drawStartScreen(const std::unique_ptr<BrickGame> &model);
-  void drawPauseScreen(const std::unique_ptr<BrickGame> &model);
-  void drawGameOver(const std::unique_ptr<BrickGame> &model);
+  void NcursesInit();
+  void WindowsInit();
+  void InitColors();
+  void MemoryAllocation();
+  void MemoryDeallocation();
+  void draw(const GameInfo_t &game);
+  void drawGame(const GameInfo_t &game);
+  void drawStartScreen(const GameState &state);
+  void drawPauseScreen(const GameState &state);
+  void drawGameOver(const GameInfo_t &game);
   void SignalProcessing();
   void MenuProcessing();
   void InitMenu();
@@ -35,6 +40,7 @@ class View {
   Signals signal;
   MenuState state;
   int key;
+  GameInfo_t game;
   WINDOW *menuWin;
   WINDOW *startWin;
   WINDOW *pauseWin;
