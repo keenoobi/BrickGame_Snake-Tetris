@@ -31,7 +31,6 @@ View::~View() {
   delwin(gameOverWin);
   delwin(gameWin);
   delwin(sideBarWin);
-  endwin();
 }
 
 void View::MenuProcessing() {
@@ -83,6 +82,8 @@ void View::InitMenu() {
     case Signals::ENTER:
       enter = true;
       ApplyChoice(menu_option);
+      break;
+    default:
       break;
   }
 
@@ -167,25 +168,26 @@ void View::drawPauseScreen(const std::unique_ptr<BrickGame> &model) {
 
 void View::drawGame(const std::unique_ptr<BrickGame> &model) {
   if (model->getCurrentState() != GameState::PLAYING) return;
-  wclear(gameWin);
-  wclear(sideBarWin);
+  // wclear(gameWin);
+  // wclear(sideBarWin);
   box(gameWin, 0, 0);     // Draw a border around the window
   box(sideBarWin, 0, 0);  // Draw a border around the window
+  char symbol = 0;
 
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
-      if (model->getGameBoard()[i][j]) {
-        char symbol = (model->getGameBoard()[i][j] == 1)   ? 'O'
-                      : (model->getGameBoard()[i][j] == 2) ? '*'
-                                                           : ' ';
-        mvwprintw(gameWin, i + 1, j + 1, "%c", symbol);
-      }
+      // if (model->getGameBoard()[i][j]) {
+      symbol = (model->getGameBoard()[i][j] == 1)   ? 'O'
+               : (model->getGameBoard()[i][j] == 2) ? '*'
+                                                    : ' ';
+      mvwprintw(gameWin, i + 1, j + 1, "%c", symbol);
+      // }
     }
   }
 
-  // mvwprintw(sideBarWin, 2, 2, "Score: %d", model.getScore());
-  // mvwprintw(sideBarWin, 4, 2, "Level: %d", model.getLevel());
-  // mvwprintw(sideBarWin, 6, 2, "Speed: %d", model.getSpeed());
+  mvwprintw(sideBarWin, 2, 2, "Score: %d", model->getScore());
+  mvwprintw(sideBarWin, 4, 2, "Level: %d", model->getLevel());
+  mvwprintw(sideBarWin, 6, 2, "Speed: %d", model->getSpeed());
   wrefresh(gameWin);
   wrefresh(sideBarWin);
 }
@@ -212,8 +214,8 @@ void View::draw(const std::unique_ptr<BrickGame> &model) {
 void View::drawGameOver(const std::unique_ptr<BrickGame> &model) {
   box(gameOverWin, 0, 0);
   mvwprintw(gameOverWin, 8, 12, "Game Over!");
-  // mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", model.getScore(),
-  //           model.getLevel());
+  mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", model->getScore(),
+            model->getLevel());
   mvwprintw(gameOverWin, 12, 5, "Start over? (Press Enter)");
   wrefresh(gameOverWin);
 }

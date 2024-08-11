@@ -30,11 +30,11 @@ class View {
   void StartSnakeGame();
 
  private:
-  int key;
   Controller controller;
   int width, height;
-  MenuState state;
   Signals signal;
+  MenuState state;
+  int key;
   WINDOW *menuWin;
   WINDOW *startWin;
   WINDOW *pauseWin;

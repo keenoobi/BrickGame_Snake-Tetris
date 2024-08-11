@@ -26,9 +26,9 @@ class SnakeModel : public BrickGame {
   void resetGame() override;
   void moveSnake();
   // GameInfo_t getData() const override;
-  int getScore() const;
-  int getLevel() const;
-  int getSpeed() const;
+  int getScore() const override;
+  int getLevel() const override;
+  int getSpeed() const override;
   int getAccelerationSpeed() const;
 
   bool isAccelerationOn() const;

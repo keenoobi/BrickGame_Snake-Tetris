@@ -1,6 +1,7 @@
 #include "../include/Model.hpp"
 
 namespace s21 {
+constexpr int base_snake_size = 4;
 
 SnakeModel::SnakeModel(int width, int height)
     : width(width),
@@ -20,7 +21,7 @@ void SnakeModel::resetGame() {
   snake.clear();
   int startX = width / 2 - 1;
   int startY = height / 2;
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < base_snake_size; ++i) {
     snake.push_back(Point(startX + i, startY));
   }
   generateFood();
@@ -146,7 +147,7 @@ void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
 GameState SnakeModel::getCurrentState() const { return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
-bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {
+inline bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {
   return currentDirection != dir;
 }
 
@@ -162,7 +163,8 @@ void SnakeModel::moveUp() {
   if (CurrentDirectionIsNot(Direction::DOWN)) {
     if (CurrentDirectionIsNot(Direction::UP))
       setCurrentDirection(Direction::UP);
-    moveSnake();
+    else
+      moveSnake();
   }
 }
 
@@ -170,7 +172,8 @@ void SnakeModel::moveDown() {
   if (CurrentDirectionIsNot(Direction::UP)) {
     if (CurrentDirectionIsNot(Direction::DOWN))
       setCurrentDirection(Direction::DOWN);
-    moveSnake();
+    else
+      moveSnake();
   }
 }
 
@@ -178,7 +181,8 @@ void SnakeModel::moveRight() {
   if (CurrentDirectionIsNot(Direction::LEFT)) {
     if (CurrentDirectionIsNot(Direction::RIGHT))
       setCurrentDirection(Direction::RIGHT);
-    moveSnake();
+    else
+      moveSnake();
   }
 }
 
@@ -186,7 +190,8 @@ void SnakeModel::moveLeft() {
   if (CurrentDirectionIsNot(Direction::RIGHT)) {
     if (CurrentDirectionIsNot(Direction::LEFT))
       setCurrentDirection(Direction::LEFT);
-    moveSnake();
+    else
+      moveSnake();
   }
 }
 
