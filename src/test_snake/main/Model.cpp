@@ -9,16 +9,16 @@ SnakeModel::SnakeModel(int width, int height)
       score(0),
       level(1),
       speed(300),
-      move_forward(false),
+      snake_moved(false),
       accelerationSpeed(100),
       acceleration(false),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
-  resetGame();
+  ResetGame();
   lastUpdateTime = GetCurrentTimeInMilliseconds();
 }
 
-void SnakeModel::resetGame() {
+void SnakeModel::ResetGame() {
   snake.clear();
   int startX = width / 2 - 1;
   int startY = height / 2;
@@ -143,16 +143,16 @@ long long SnakeModel::GetCurrentTimeInMilliseconds() {
   return duration.count();
 }
 
-int SnakeModel::getScore() const { return score; }
-int SnakeModel::getLevel() const { return level; }
-int SnakeModel::getSpeed() const { return speed; }
+// int SnakeModel::getScore() const { return score; }
+// int SnakeModel::getLevel() const { return level; }
+// int SnakeModel::getSpeed() const { return speed; }
 // int SnakeModel::getAccelerationSpeed() const { return accelerationSpeed; }
 // bool SnakeModel::isAccelerationOn() const { return acceleration; }
 // void SnakeModel::setAcceleration(bool status) { acceleration = status; }
 const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
-const std::vector<std::vector<int>>& SnakeModel::getGameBoard() const {
-  return gameBoard;
-}
+// const std::vector<std::vector<int>>& SnakeModel::getGameBoard() const {
+//   return gameBoard;
+// }
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
@@ -168,52 +168,52 @@ void SnakeModel::moveForward() {
   if (currentTime - lastUpdateTime >= speed) {
     moveSnake();
     lastUpdateTime = currentTime;
-    move_forward = true;
+    snake_moved = true;
   }
 }
 
 void SnakeModel::moveUp() {
-  if (move_forward && CurrentDirectionIsNot(Direction::DOWN)) {
+  if (snake_moved && CurrentDirectionIsNot(Direction::DOWN)) {
     if (CurrentDirectionIsNot(Direction::UP)) {
       setCurrentDirection(Direction::UP);
-      move_forward = false;
+      snake_moved = false;
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveDown() {
-  if (move_forward && CurrentDirectionIsNot(Direction::UP)) {
+  if (snake_moved && CurrentDirectionIsNot(Direction::UP)) {
     if (CurrentDirectionIsNot(Direction::DOWN)) {
       setCurrentDirection(Direction::DOWN);
-      move_forward = false;
+      snake_moved = false;
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveRight() {
-  if (move_forward && CurrentDirectionIsNot(Direction::LEFT)) {
+  if (snake_moved && CurrentDirectionIsNot(Direction::LEFT)) {
     if (CurrentDirectionIsNot(Direction::RIGHT)) {
       setCurrentDirection(Direction::RIGHT);
-      move_forward = false;
+      snake_moved = false;
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveLeft() {
-  if (move_forward && CurrentDirectionIsNot(Direction::RIGHT)) {
+  if (snake_moved && CurrentDirectionIsNot(Direction::RIGHT)) {
     if (CurrentDirectionIsNot(Direction::LEFT)) {
       setCurrentDirection(Direction::LEFT);
-      move_forward = false;
+      snake_moved = false;
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::Start() {
-  resetGame();
+  ResetGame();
   setCurrentState(GameState::PLAYING);
 }
 

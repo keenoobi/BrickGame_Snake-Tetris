@@ -23,19 +23,20 @@ class SnakeModel : public BrickGame {
  public:
   using action = void (SnakeModel::*)();
   SnakeModel(int width = 10, int height = 20);
-  void resetGame() override;
+  ~SnakeModel() = default;
+  void ResetGame() override;
   void moveSnake();
   void GetData(GameInfo_t& game) const override;
-  int getScore() const override;
-  int getLevel() const override;
-  int getSpeed() const override;
+  // int getScore() const override;
+  // int getLevel() const override;
+  // int getSpeed() const override;
   // int getAccelerationSpeed() const;
 
   // bool isAccelerationOn() const;
   // void setAcceleration(bool);
 
   const std::vector<Point>& getSnake() const;
-  const std::vector<std::vector<int>>& getGameBoard() const override;
+  // const std::vector<std::vector<int>>& getGameBoard() const override;
 
   const Point& getFood() const;
   Direction getCurrentDirection() const;
@@ -74,7 +75,7 @@ class SnakeModel : public BrickGame {
   int score;
   int level;
   int speed;
-  bool move_forward;
+  bool snake_moved;
   int accelerationSpeed;
   bool acceleration;
   Direction currentDirection;

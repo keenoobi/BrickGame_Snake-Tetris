@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "Model.hpp"
+#include "TetrisModel.hpp"
 #include "data.h"
 // #include "View.hpp"
 // #include "baseModel.hpp"

@@ -1,5 +1,5 @@
-#ifndef DATA_H
-#define DATA_H
+#ifndef DATA1_H
+#define DATA1_H
 
 namespace s21 {
 
@@ -15,4 +15,4 @@ typedef struct {
 
 }  // namespace s21
 
-#endif  // DATA_H
+#endif  // DATA1_H

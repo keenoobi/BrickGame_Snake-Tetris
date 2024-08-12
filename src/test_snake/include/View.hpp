@@ -33,6 +33,7 @@ class View {
   void ApplyChoice(int &choice);
   void DrawMenu(const std::vector<std::string> &options, int &menu_option);
   void StartSnakeGame();
+  void StartTetrisGame();
 
  private:
   Controller controller;

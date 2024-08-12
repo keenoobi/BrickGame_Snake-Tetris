@@ -10,7 +10,7 @@ void Controller::setGame(MenuState state) {
       model = std::make_unique<SnakeModel>();
       break;
     case MenuState::TETRIS_GAME:
-      model = std::make_unique<SnakeModel>();
+      model = std::make_unique<TetrisModel>();
       break;
     default:
       break;

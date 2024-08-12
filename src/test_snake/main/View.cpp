@@ -2,14 +2,6 @@
 
 namespace s21 {
 
-#define ADD_BLOCK(win, row, col, x)                                         \
-  mvwaddch((win), (row) + 1, (col)*2 + 1, ' ' | A_REVERSE | COLOR_PAIR(x)); \
-  mvwaddch((win), (row) + 1, (col)*2 + 2, ' ' | A_REVERSE | COLOR_PAIR(x))
-
-#define ADD_EMPTY(win, row, col)                \
-  mvwaddch((win), (row) + 1, (col)*2 + 1, ' '); \
-  mvwaddch((win), (row) + 1, (col)*2 + 2, ' ')
-
 View::View(int width, int height)
     : width(width),
       height(height),
@@ -97,7 +89,7 @@ void View::MenuProcessing() {
         StartSnakeGame();
         break;
       case MenuState::TETRIS_GAME:
-        // StartTetrisGame();
+        StartTetrisGame();
         break;
       case MenuState::EXIT_MENU:
         // InitExit();
@@ -106,6 +98,19 @@ void View::MenuProcessing() {
         break;
     }
   }
+}
+
+void View::StartTetrisGame() {
+  controller.setGame(state);
+
+  while (controller.GetCurrentGameState() != GameState::EXIT) {
+    SignalProcessing();
+    controller.GameProcessing(signal);
+    controller.getData(game);
+    draw(game);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+  state = MenuState::MENU;
 }
 
 void View::StartSnakeGame() {
@@ -229,8 +234,8 @@ void View::drawGame(const GameInfo_t &game) {
   box(sideBarWin, 0, 0);  // Draw a border around the window
   // char symbol = 0;
 
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width - 10; j++) {
+  for (int i = 0; i < BOARD_HEIGHT; i++) {
+    for (int j = 0; j < BOARD_WIDTH; j++) {
       if (game.field[i][j]) {
         ADD_BLOCK(gameWin, i, j, game.field[i][j]);
       } else {
