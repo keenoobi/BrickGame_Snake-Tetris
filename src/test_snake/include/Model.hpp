@@ -74,7 +74,7 @@ class SnakeModel : public BrickGame {
   int score;
   int level;
   int speed;
-  bool hasmoved;
+  bool move_forward;
   int accelerationSpeed;
   bool acceleration;
   Direction currentDirection;
