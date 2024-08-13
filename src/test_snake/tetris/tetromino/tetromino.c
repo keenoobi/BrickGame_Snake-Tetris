@@ -1,4 +1,4 @@
-#include "../tetris.h"
+#include "tetromino.h"
 
 bool tetrominoFits(game *tetris, tetris_block block) {
   bool fits = true;

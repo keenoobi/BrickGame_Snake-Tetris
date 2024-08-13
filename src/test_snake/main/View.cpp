@@ -272,6 +272,8 @@ void View::draw(const GameInfo_t &game) {
 }
 
 void View::drawGameOver(const GameInfo_t &game) {
+  wclear(gameWin);
+  wclear(sideBarWin);
   box(gameOverWin, 0, 0);
   mvwprintw(gameOverWin, 8, 12, "Game Over!");
   mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", game.score, game.level);

@@ -1,7 +1,7 @@
 #ifndef TETROMINO_H
 #define TETROMINO_H
 
-#include "../tetris.h"
+#include "../tetris_backend.h"
 
 bool tetrominoFits(game *tetris, tetris_block block);
 int randomTetromino();

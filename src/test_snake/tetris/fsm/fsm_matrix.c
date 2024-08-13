@@ -7,11 +7,11 @@ action fsm_table[7][8] = {
      pauseGame},
     {attaching, attaching, attaching, attaching, attaching, attaching,
      attaching, attaching},
-    {gameOver, gameOver, gameOver, gameOver, gameOver, gameOver, start,
+    {gameOver, gameOver, gameOver, gameOver, gameOver, exitstate, start,
      gameOver},
     {exitstate, exitstate, exitstate, exitstate, exitstate, exitstate,
      exitstate},
-    {NULL, NULL, NULL, NULL, NULL, NULL, NULL, pauseGame}};
+    {NULL, NULL, NULL, NULL, NULL, exitstate, NULL, pauseGame}};
 
 void sigact(Signals_t signal, tetris_state *state, game *tetris) {
   params_t prms = {0};

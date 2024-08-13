@@ -1,14 +1,19 @@
 CC=gcc
+CPP=g++
 CFLAGS=-Wall -Wextra -Werror -std=c11
+CPPFLAGS=-Wall -Wextra -Werror -std=c++17
 CURSES=-lncurses
 DIR=
 DIST_DIR=archive
-MAIN_PROJECT=$(wildcard tetris/**/*.c tetris/**/**/*.c) # list of all the C source files in the project
-SOURCES=$(filter-out backend_tests/%.c tetris.c, $(MAIN_PROJECT))
-TEST_SOURCES=$(filter-out %/tetris/tetris.c %/cli/tetris_frontend.c %/tetris/fsm/fsm_matrix.c, $(MAIN_PROJECT))
+TETRIS_PROJECT=$(wildcard tetris/**/*.c tetris/**/**/*.c) # list of all the C source files in the project
+SNAKE_PROJECT=$(wildcard **/*.cpp) # list of all the C source files in the project
+TETRIS_SOURCES=$(filter-out backend_tests/%.c tetris.c, $(TETRIS_PROJECT))
+SNAKE_SOURCES=$(filter-out backend_tests/%.c tetris.c, $(SNAKE_PROJECT))
+# TEST_SOURCES=$(filter-out %/tetris/tetris.c %/cli/tetris_frontend.c %/tetris/fsm/fsm_matrix.c, $(MAIN_PROJECT))
 MAIN=tetris.game
-TEST_RESULT=backend_tests/test
-OBJECTS=$(SOURCES:.c=.o)
+# TEST_RESULT=backend_tests/test
+TETRIS_OBJECTS=$(TETRIS_SOURCES:.c=.o)
+SNAKE_OBJECTS=$(SNAKE_SOURCES:.cpp=.o)
 TEST_OBJECTS=$(TEST_SOURCES:.c=.o)
 RESULT=libtetris_game.a
 
@@ -28,8 +33,8 @@ endif
 
 all: rungame
 
-install: $(RESULT)
-	@$(CC) $(CFLAGS) $^ $(CURSES) -o $(DIR)$(MAIN)
+install: $(RESULT) $(SNAKE_OBJECTS)
+	@$(CPP) $(CPPFLAGS) $^ $(CURSES) -o $(DIR)$(MAIN)
 	@echo "Game Installed Successfully"
 
 uninstall: clean
@@ -40,8 +45,8 @@ test: $(TEST_OBJECTS)
 	$(CC) $(CFLAGS) $^ -o $(TEST_RESULT) $(CHECK_LIB)
 	./$(TEST_RESULT)
 
-$(RESULT): $(OBJECTS)
-	ar rc $(RESULT) $(OBJECTS)
+$(RESULT): $(TETRIS_OBJECTS)
+	ar rc $(RESULT) $^
 	echo "Static Library Created"
 
 dvi:
@@ -61,6 +66,9 @@ dist_unpack:
 
 .c.o:
 	$(CC) -c $(CFLAGS) $< -o $@
+
+.cpp.o:
+	$(CPP) -c $(CPPFLAGS) $< -o $@
 
 gcov_report: $(TEST_SOURCES) 
 	$(CC) $(CFLAGS) --coverage $^ $(CHECK_LIB) -o $@
@@ -85,7 +93,7 @@ git:
 	git push origin develop
 
 clean: clean_dist remove_save
-	@rm -rf $(RESULT) $(OBJECTS) $(TEST_OBJECTS) $(TEST_RESULT) gcov_report* *.gc* report/ *.o $(DIR)$(MAIN)
+	rm -rf $(RESULT) $(TETRIS_OBJECTS) $(SNAKE_OBJECTS) $(TEST_OBJECTS) $(TEST_RESULT) gcov_report* *.gc* report/ *.o $(DIR)$(MAIN)
 	@echo "Everything is cleaned"
 
 clean_dist:

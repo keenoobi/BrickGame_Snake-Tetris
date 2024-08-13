@@ -1,7 +1,7 @@
 #ifndef FSM_H
 #define FSM_H
 
-#include "../tetris.h"
+#include "../tetris_backend.h"
 
 typedef void (*action)(params_t *prms);
 

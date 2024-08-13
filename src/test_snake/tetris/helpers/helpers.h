@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../tetris.h"
+#include "../tetris_backend.h"
 
 bool checkRotationPossibility(params_t *prms, int col, int ori);
 bool lineFull(game *tetris, int row);
