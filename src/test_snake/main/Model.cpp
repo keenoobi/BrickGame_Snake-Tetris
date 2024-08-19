@@ -1,5 +1,5 @@
 #include "../include/Model.hpp"
-#include <iostream>
+
 
 namespace s21 {
 constexpr int base_snake_size = 4;
@@ -15,7 +15,7 @@ SnakeModel::SnakeModel(int width, int height)
       acceleration(false),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
-  ResetGame();
+  // ResetGame();
   lastUpdateTime = GetCurrentTimeInMilliseconds();
 }
 
@@ -157,7 +157,7 @@ const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
-GameState SnakeModel::getCurrentState() const {      std::cout << "Current Game State in Model: " << static_cast<int>(currentState) << std::endl; return currentState; }
+GameState SnakeModel::getCurrentState() const { return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
 inline bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {

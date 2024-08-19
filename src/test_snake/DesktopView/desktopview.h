@@ -6,6 +6,8 @@
 #include <QOpenGLWidget>
 #include <QColor>
 #include <QPainter>
+#include <QPen>
+#include <QMap>
 #include <QTimer>
 #include <vector>
 #include <string>
@@ -30,7 +32,7 @@ public:
     void InitMenu();
     void ApplyChoice(int &);
     void DrawMenu(const std::vector<std::string> &options, int &menu_option);
-    void StartSnakeGame();
+    void StartTheGame();
 
 
 private:
@@ -42,6 +44,7 @@ private:
     void drawStartScreen(const GameState &state);
     void drawPauseScreen(const GameState &state);
     void drawGameOver(const GameInfo_t &game);
+    void InitColors();
 
     Controller controller;
     int width, height;
@@ -50,7 +53,9 @@ private:
     QTimer *gameTimer;
     GameInfo_t game;
     QPainter painter;
-    GameState game_state;    // Общий QPainter
+    GameState game_state;
+    QMap<int, QColor> colorMap;
+        // Общий QPainter
     // Добавьте другие необходимые переменные для игры
 };
 
