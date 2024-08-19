@@ -8,7 +8,7 @@ namespace s21 {
 class TetrisModel : public BrickGame {
  public:
   TetrisModel();
-  void ResetGame() override;
+  void ResetGame();
   void GetData(GameInfo_t &game) const override;
   GameState getCurrentState() const override;
   void handleEvent(Signals) override;

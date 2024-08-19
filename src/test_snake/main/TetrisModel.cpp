@@ -1,12 +1,8 @@
 #include "../include/TetrisModel.hpp"
 
 namespace s21 {
-TetrisModel::TetrisModel() {
-  running = true;
-  game_over = false;
-  signal = None;
-  state = START;
-
+TetrisModel::TetrisModel()
+    : running(true), game_over(false), signal(None), state(START) {
   ResetGame();
 }
 

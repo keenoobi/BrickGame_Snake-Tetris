@@ -81,15 +81,16 @@ View::~View() {
 
 void View::MenuProcessing() {
   while (state != MenuState::EXIT_MENU) {
+    SignalProcessing();
     switch (state) {
       case MenuState::MENU:
         InitMenu();
         break;
       case MenuState::SNAKE_GAME:
-        StartSnakeGame();
+        StartTheGame();
         break;
       case MenuState::TETRIS_GAME:
-        StartTetrisGame();
+        StartTheGame();
         break;
       case MenuState::EXIT_MENU:
         // InitExit();
@@ -100,37 +101,20 @@ void View::MenuProcessing() {
   }
 }
 
-void View::StartTetrisGame() {
-  controller.setGame(state);
-
-  while (controller.GetCurrentGameState() != GameState::EXIT) {
-    SignalProcessing();
+void View::StartTheGame() {
+  if (controller.GetCurrentGameState() != GameState::EXIT) {
     controller.GameProcessing(signal);
     controller.getData(game);
     draw(game);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-  state = MenuState::MENU;
-}
-
-void View::StartSnakeGame() {
-  controller.setGame(state);
-  while (controller.GetCurrentGameState() != GameState::EXIT) {
-    SignalProcessing();
-    controller.GameProcessing(signal);
-    controller.getData(game);
-    draw(game);
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-  state = MenuState::MENU;
+  } else
+    state = MenuState::MENU;
 }
 
 void View::InitMenu() {
   static int menu_option = 0;
   bool enter = false;
   std::vector<std::string> options = {"Tetris", "Snake", "Exit"};
-
-  SignalProcessing();
 
   switch (signal) {
     case Signals::UP:
@@ -154,9 +138,11 @@ void View::ApplyChoice(int &choice) {
   switch (choice) {
     case 0:
       state = MenuState::TETRIS_GAME;
+      controller.setGame(state);
       break;
     case 1:
       state = MenuState::SNAKE_GAME;
+      controller.setGame(state);
       break;
     case 2:
       state = MenuState::EXIT_MENU;
@@ -227,12 +213,8 @@ void View::drawPauseScreen(const GameState &state) {
 }
 
 void View::drawGame(const GameInfo_t &game) {
-  // if (model->getCurrentState() != GameState::PLAYING) return;
-  // wclear(gameWin);
-  // wclear(sideBarWin);
   box(gameWin, 0, 0);     // Draw a border around the window
   box(sideBarWin, 0, 0);  // Draw a border around the window
-  // char symbol = 0;
 
   for (int i = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
@@ -247,8 +229,25 @@ void View::drawGame(const GameInfo_t &game) {
   mvwprintw(sideBarWin, 2, 2, "Score: %d", game.score);
   mvwprintw(sideBarWin, 4, 2, "Level: %d", game.level);
   mvwprintw(sideBarWin, 6, 2, "Speed: %d", game.speed);
+  displayNextFigure(game);
   wrefresh(gameWin);
   wrefresh(sideBarWin);
+}
+
+void View::displayNextFigure(const GameInfo_t &game) {
+  if (state != MenuState::TETRIS_GAME) return;
+
+  box(sideBarWin, 0, 0);
+
+  for (int i = 0; i < TETROMINO_SIZE; i++) {
+    for (int j = 0; j < TETROMINO_SIZE; j++) {
+      if (game.next[i][j]) {
+        ADD_BLOCK(sideBarWin, i + 11, j + 1, game.next[i][j]);
+      } else {
+        ADD_EMPTY(sideBarWin, i + 11, j + 1);
+      }
+    }
+  }
 }
 
 void View::draw(const GameInfo_t &game) {

@@ -24,6 +24,7 @@ class View {
   void MemoryDeallocation();
   void draw(const GameInfo_t &game);
   void drawGame(const GameInfo_t &game);
+  void displayNextFigure(const GameInfo_t &game);
   void drawStartScreen(const GameState &state);
   void drawPauseScreen(const GameState &state);
   void drawGameOver(const GameInfo_t &game);
@@ -32,8 +33,7 @@ class View {
   void InitMenu();
   void ApplyChoice(int &choice);
   void DrawMenu(const std::vector<std::string> &options, int &menu_option);
-  void StartSnakeGame();
-  void StartTetrisGame();
+  void StartTheGame();
 
  private:
   Controller controller;

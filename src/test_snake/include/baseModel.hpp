@@ -14,7 +14,6 @@ enum class Signals { NONE, UP, DOWN, RIGHT, LEFT, ESC, ENTER, PAUSE };
 
 class BrickGame {
  public:
-  virtual void ResetGame() = 0;
   virtual void GetData(GameInfo_t& game) const = 0;
   virtual GameState getCurrentState() const = 0;
   virtual void handleEvent(Signals) = 0;

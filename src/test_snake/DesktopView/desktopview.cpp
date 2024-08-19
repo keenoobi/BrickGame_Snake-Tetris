@@ -289,9 +289,10 @@ void DesktopView::drawGame(const GameInfo_t &game) {
     painter.setPen(whitePen);
 
     // Draw game field
-    int blockSize = 20; // Размер блока
+    int blockSize = 28; // Размер блока
     int borderOffset = whitePen.width() / 2; // Смещение для учета толщины линии
     painter.drawRect(10 - borderOffset, 10 - borderOffset, blockSize*10 + 2 * borderOffset, blockSize*20 + 2 * borderOffset);
+    painter.drawRect(300 - borderOffset, 10 - borderOffset, blockSize*5 + 2 * borderOffset, blockSize*20 + 2 * borderOffset);
 
     // Устанавливаем черное перо для рисования внутренних блоков
     painter.setPen(blackPen);
@@ -312,9 +313,26 @@ void DesktopView::drawGame(const GameInfo_t &game) {
 
     // Draw sidebar
     painter.setPen(Qt::white); // Возвращаем белое перо для текста
-    painter.drawText(width - 150, 20, QString("Score: %1").arg(game.score));
-    painter.drawText(width - 150, 40, QString("Level: %1").arg(game.level));
-    painter.drawText(width - 150, 60, QString("Speed: %1").arg(game.speed));
+    painter.drawText(320 - borderOffset, 40 - borderOffset, QString("Score: %1").arg(game.score));
+    painter.drawText(320 - borderOffset, 80 - borderOffset,  QString("Level: %1").arg(game.level));
+    painter.drawText(320 - borderOffset, 120 - borderOffset,  QString("Speed: %1").arg(game.speed));
+
+    if (state == MenuState::TETRIS_GAME) drawSideBar(game, blockSize, snakeOffset);
+}
+
+void DesktopView::drawSideBar(const GameInfo_t &game, const int &blockSize, const int &snakeOffset) {
+        painter.setPen(Qt::black);
+    for (int i = 0, value = 0; i < TETROMINO_SIZE; i++) {
+        for (int j = 0; j < TETROMINO_SIZE; j++) {
+            value = game.next[i][j];
+            if (colorMap.contains(value)) {
+                QColor color = colorMap[value];
+                painter.drawRect(320 + j * blockSize + snakeOffset, 160 + i * blockSize + snakeOffset, blockSize - 2 * snakeOffset, blockSize - 2 * snakeOffset);
+                painter.fillRect(320 + j * blockSize + snakeOffset, 160 + i * blockSize + snakeOffset, blockSize - 2 * snakeOffset, blockSize - 2 * snakeOffset, color);
+            }
+        }
+    }
+
 }
 
 void DesktopView::drawPauseScreen(const GameState &state) {

@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "BaseModel.hpp"
-// #include "data.h"
 
 namespace s21 {
 
@@ -24,20 +23,10 @@ class SnakeModel : public BrickGame {
   using action = void (SnakeModel::*)();
   SnakeModel(int width = 10, int height = 20);
   ~SnakeModel() = default;
-  void ResetGame() override;
-  void moveSnake();
+  void ResetGame();
   void GetData(GameInfo_t& game) const override;
-  // int getScore() const override;
-  // int getLevel() const override;
-  // int getSpeed() const override;
-  // int getAccelerationSpeed() const;
-
-  // bool isAccelerationOn() const;
-  // void setAcceleration(bool);
 
   const std::vector<Point>& getSnake() const;
-  // const std::vector<std::vector<int>>& getGameBoard() const override;
-
   const Point& getFood() const;
   Direction getCurrentDirection() const;
   bool CurrentDirectionIsNot(Direction) const;
@@ -52,6 +41,7 @@ class SnakeModel : public BrickGame {
   void moveDown();
   void moveRight();
   void moveLeft();
+  void moveSnake();
   void Start();
   void Exit();
   void Pause();

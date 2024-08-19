@@ -1,6 +1,5 @@
 #include "../include/Model.hpp"
 
-
 namespace s21 {
 constexpr int base_snake_size = 4;
 
@@ -15,7 +14,6 @@ SnakeModel::SnakeModel(int width, int height)
       acceleration(false),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
-  // ResetGame();
   lastUpdateTime = GetCurrentTimeInMilliseconds();
 }
 
@@ -30,7 +28,7 @@ void SnakeModel::ResetGame() {
   score = 0;
   level = 1;
   speed = 300;
-
+  gameBoard = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
   currentDirection = Direction::LEFT;
   currentState = GameState::START;
   updateGameBoard();
@@ -48,7 +46,6 @@ void SnakeModel::GetData(GameInfo_t& game) const {
 }
 
 void SnakeModel::handleEvent(Signals signal) {
-  // if (signal == Signals::NONE) return;
   action act =
       fsm_table[static_cast<int>(currentState)][static_cast<int>(signal)];
 
@@ -74,6 +71,7 @@ void SnakeModel::moveSnake() {
 
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
+    gameBoard[snake.back().y][snake.back().x] = 0;
     snake.pop_back();
   } else if (foodEaten) {
     handleFoodConsumption();
@@ -130,11 +128,11 @@ void SnakeModel::handleFoodConsumption() {
 }
 
 void SnakeModel::updateGameBoard() {
-  gameBoard = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
   for (const auto& part : snake) {
-    gameBoard[part.y][part.x] = 5;  // Змейка будет представлена 1
+    gameBoard[part.y][part.x] = 5;  // Змейка будет представлена 5
   }
-  gameBoard[food.y][food.x] = 7;  // Еда будет представлена 2
+  gameBoard[snake.front().y][snake.front().x] = 4;  // Голова змейки 4
+  gameBoard[food.y][food.x] = 7;  // Еда будет представлена 7
 }
 
 long long SnakeModel::GetCurrentTimeInMilliseconds() {
@@ -144,16 +142,7 @@ long long SnakeModel::GetCurrentTimeInMilliseconds() {
   return duration.count();
 }
 
-// int SnakeModel::getScore() const { return score; }
-// int SnakeModel::getLevel() const { return level; }
-// int SnakeModel::getSpeed() const { return speed; }
-// int SnakeModel::getAccelerationSpeed() const { return accelerationSpeed; }
-// bool SnakeModel::isAccelerationOn() const { return acceleration; }
-// void SnakeModel::setAcceleration(bool status) { acceleration = status; }
 const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
-// const std::vector<std::vector<int>>& SnakeModel::getGameBoard() const {
-//   return gameBoard;
-// }
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }

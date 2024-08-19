@@ -23,7 +23,7 @@ SOURCES += \
 
 HEADERS += \
     desktopview.h \
-    ../include/baseMode.hpp \
+    ../include/baseModel.hpp \
     ../include/Controller.hpp \
     ../include/data.hpp \
     ../include/Model.hpp \

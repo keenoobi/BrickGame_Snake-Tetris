@@ -41,6 +41,7 @@ private:
     void updateGame();
     void draw(const GameInfo_t &game);
     void drawGame(const GameInfo_t &game);
+    void drawSideBar(const GameInfo_t &game, const int &blockSize, const int &snakeOffset);
     void drawStartScreen(const GameState &state);
     void drawPauseScreen(const GameState &state);
     void drawGameOver(const GameInfo_t &game);
