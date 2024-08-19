@@ -1,4 +1,5 @@
 #include "../include/Model.hpp"
+#include <iostream>
 
 namespace s21 {
 constexpr int base_snake_size = 4;
@@ -156,7 +157,7 @@ const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
-GameState SnakeModel::getCurrentState() const { return currentState; }
+GameState SnakeModel::getCurrentState() const {      std::cout << "Current Game State in Model: " << static_cast<int>(currentState) << std::endl; return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
 inline bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {

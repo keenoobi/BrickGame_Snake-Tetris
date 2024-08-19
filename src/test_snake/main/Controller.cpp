@@ -1,4 +1,5 @@
 #include "../include/Controller.hpp"
+#include <iostream>
 
 namespace s21 {
 
@@ -23,7 +24,9 @@ void Controller::getData(GameInfo_t& game) {
 }
 std::unique_ptr<BrickGame>& Controller::GetModel() { return model; }
 GameState Controller::GetCurrentGameState() { return model->getCurrentState(); }
-void Controller::GameProcessing(Signals signal) { model->handleEvent(signal); }
+void Controller::GameProcessing(Signals signal) { model->handleEvent(signal);
+std::cout << "Processing Signal: " << static_cast<int>(signal) << std::endl;
+}
 
 // void Controller::run() {
 //   // view.draw(model);
