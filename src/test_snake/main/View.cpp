@@ -107,8 +107,11 @@ void View::StartTheGame() {
     controller.getData(game);
     draw(game);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  } else
+  } else {
+    wclear(gameWin);
+    wclear(sideBarWin);
     state = MenuState::MENU;
+  }
 }
 
 void View::InitMenu() {
