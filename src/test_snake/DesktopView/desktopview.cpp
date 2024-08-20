@@ -321,11 +321,11 @@ void DesktopView::drawNextFigure(const GameInfo_t &game) {
       if (colorMap.contains(value)) {
         QColor color = colorMap[value];
         painter.drawRect(320 + j * blockSize + borderOffset,
-                         180 + i * blockSize + borderOffset,
+                         220 + i * blockSize + borderOffset,
                          blockSize - 2 * borderOffset,
                          blockSize - 2 * borderOffset);
         painter.fillRect(320 + j * blockSize + borderOffset,
-                         180 + i * blockSize + borderOffset,
+                         220 + i * blockSize + borderOffset,
                          blockSize - 2 * borderOffset,
                          blockSize - 2 * borderOffset, color);
       }
@@ -341,8 +341,10 @@ void DesktopView::drawSidebar(const GameInfo_t &game) {
                    QString("Score: %1").arg(game.score));
   painter.drawText(310 - borderOffset, 100 - borderOffset,
                    QString("Level: %1").arg(game.level));
+  painter.drawText(310 - borderOffset, 140 - borderOffset,
+                   QString("Record: %1").arg(game.high_score));
   if (state == MenuState::SNAKE_GAME)
-    painter.drawText(310 - borderOffset, 140 - borderOffset,
+    painter.drawText(310 - borderOffset, 180 - borderOffset,
                      QString("Speed: %1").arg(game.speed));
 
   if (state == MenuState::TETRIS_GAME) {

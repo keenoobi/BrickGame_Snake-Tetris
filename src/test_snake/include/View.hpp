@@ -17,6 +17,9 @@ class View {
  public:
   View(int width = 20, int height = 20);
   ~View();
+  void MenuProcessing();
+
+ private:
   void NcursesInit();
   void WindowsInit();
   void InitColors();
@@ -29,7 +32,6 @@ class View {
   void drawPauseScreen(const GameState &state);
   void drawGameOver(const GameInfo_t &game);
   void SignalProcessing();
-  void MenuProcessing();
   void InitMenu();
   void ApplyChoice(int &choice);
   void DrawMenu(const std::vector<std::string> &options, int &menu_option);

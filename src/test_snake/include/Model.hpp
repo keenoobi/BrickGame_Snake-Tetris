@@ -32,10 +32,11 @@ class SnakeModel : public BrickGame {
   bool CurrentDirectionIsNot(Direction) const;
   void setCurrentDirection(Direction);
 
-  void handleEvent(Signals) override;
   GameState getCurrentState() const override;
   void setCurrentState(GameState);
 
+ private:
+  void handleEvent(Signals) override;
   void moveForward();
   void moveUp();
   void moveDown();
@@ -47,7 +48,6 @@ class SnakeModel : public BrickGame {
   void Pause();
   void GameOver();
 
- private:
   void generateFood();
   Point calculateNewHead(const Point& head);
   bool isOutOfBounds(const Point& newHead);
@@ -56,8 +56,8 @@ class SnakeModel : public BrickGame {
   void updateGameBoard();
   static long long GetCurrentTimeInMilliseconds();
 
+ private:
   long long lastUpdateTime;
-
   std::vector<Point> snake;
   Point food;
   int width, height;
