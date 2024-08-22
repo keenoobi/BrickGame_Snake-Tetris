@@ -61,13 +61,10 @@ class SnakeModel : public BrickGame {
   std::vector<Point> snake;
   Point food;
   int width, height;
-  bool gameOver;
   int score;
   int level;
   int speed;
   bool snake_moved;
-  int accelerationSpeed;
-  bool acceleration;
   Direction currentDirection;
   std::vector<std::vector<int>> gameBoard;
 

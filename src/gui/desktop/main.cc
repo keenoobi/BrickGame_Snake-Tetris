@@ -9,4 +9,3 @@ int main(int argc, char *argv[]) {
     app.show();
     return a.exec();
 }
-

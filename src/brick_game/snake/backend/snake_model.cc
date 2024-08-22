@@ -10,8 +10,6 @@ SnakeModel::SnakeModel(int width, int height)
       level(1),
       speed(300),
       snake_moved(false),
-      accelerationSpeed(100),
-      acceleration(false),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
   lastUpdateTime = GetCurrentTimeInMilliseconds();

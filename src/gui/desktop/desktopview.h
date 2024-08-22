@@ -1,6 +1,8 @@
 #ifndef DESKTOPVIEW_H
 #define DESKTOPVIEW_H
 
+#include "../../brick_game/controller/controller.h"
+
 #include <QColor>
 #include <QFont>
 #include <QKeyEvent>
@@ -14,7 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "../include/Controller.hpp"
 
 namespace s21 {
 
