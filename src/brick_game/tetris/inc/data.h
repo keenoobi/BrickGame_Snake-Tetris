@@ -73,7 +73,7 @@ static const int kScoreForCompleteLiens[4] = {100, 300, 700, 1500};
 
 static const int kGravityLevel[10] = {
     // 0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-    50, 48, 46, 44, 42, 40, 38, 36, 34, 32};
+    50, 45, 40, 35, 30, 25, 20, 15, 10, 5};
 
 static const tetris_location
     kTetrisFigure[NUM_TETROMINOES][NUM_ORIENTATIONS][TETROMINO_SIZE] = {

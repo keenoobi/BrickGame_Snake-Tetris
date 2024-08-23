@@ -10,6 +10,7 @@ SnakeModel::SnakeModel(int width, int height)
       speed(300),
       record(0),
       snake_moved(false),
+      currentDirection(Direction::LEFT),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
   lastUpdateTime = GetCurrentTimeInMilliseconds();
@@ -68,17 +69,15 @@ void SnakeModel::moveSnake() {
   }
 
   bool foodEaten = (newHead == food);
-
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
     gameBoard[snake.back().y][snake.back().x] = 0;
     snake.pop_back();
-  } else if (foodEaten) {
+  } else {
     handleFoodConsumption();
   }
-
   // Добавляем новую голову
-  snake.insert(snake.begin(), newHead);
+  snake.push_front(newHead);
 
   updateGameBoard();
 }
@@ -122,12 +121,13 @@ void SnakeModel::handleFoodConsumption() {
   score++;
   if (score % kPointsPerLevel == 0 && level < kMaxLevel && speed) {
     level++;
-    speed -= 20;  // Увеличиваем скорость с каждым уровнем
+    speed -= 21;  // Увеличиваем скорость с каждым уровнем
   }
   if (score > record) {
     record = score;
     WriteSnakeRecord();
   }
+  if (score == 200) setCurrentState(GameState::GAMEOVER);
   generateFood();
 }
 
@@ -146,7 +146,7 @@ long long SnakeModel::GetCurrentTimeInMilliseconds() {
   return duration.count();
 }
 
-const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
+const std::deque<Point>& SnakeModel::getSnake() const { return snake; }
 const Point& SnakeModel::getFood() const { return food; }
 Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
 void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }

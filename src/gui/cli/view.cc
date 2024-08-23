@@ -233,7 +233,7 @@ void View::drawGame(const GameInfo_t &game) {
   mvwprintw(sideBarWin, 4, 2, "Level: %d", game.level);
   mvwprintw(sideBarWin, 6, 2, "Record: %d", game.high_score);
   if (state == MenuState::SNAKE_GAME)
-    mvwprintw(sideBarWin, 8, 2, "Speed: %d", game.speed);
+    mvwprintw(sideBarWin, 8, 2, "Speed: %d", 300 - game.speed);
   displayNextFigure(game);
   wrefresh(gameWin);
   wrefresh(sideBarWin);
@@ -279,7 +279,12 @@ void View::drawGameOver(const GameInfo_t &game) {
   wclear(gameWin);
   wclear(sideBarWin);
   box(gameOverWin, 0, 0);
-  mvwprintw(gameOverWin, 8, 12, "Game Over!");
+
+  if (game.score < 200)
+    mvwprintw(gameOverWin, 8, 12, "Game Over!");
+  else
+    mvwprintw(gameOverWin, 8, 14, "YOU WON!");
+
   mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", game.score, game.level);
   mvwprintw(gameOverWin, 12, 5, "Start over? (Press Enter)");
   wrefresh(gameOverWin);

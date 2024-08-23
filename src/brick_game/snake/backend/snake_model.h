@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <deque>
 
 #include "../../base/base_model.h"
 
@@ -20,7 +21,7 @@ struct Point {
 class SnakeModel : public BrickGame {
   const int kBaseSnakeSize = 4;
   const int kPointsPerLevel = 5;
-  const int kMaxLevel = 5;
+  const int kMaxLevel = 10;
   const char* kFileName = "snake.record";
 
  public:
@@ -30,7 +31,7 @@ class SnakeModel : public BrickGame {
   void ResetGame();
   void GetData(GameInfo_t& game) const override;
 
-  const std::vector<Point>& getSnake() const;
+  const std::deque<Point>& getSnake() const;
   const Point& getFood() const;
   Direction getCurrentDirection() const;
   bool CurrentDirectionIsNot(Direction) const;
@@ -64,7 +65,7 @@ class SnakeModel : public BrickGame {
 
  private:
   long long lastUpdateTime;
-  std::vector<Point> snake;
+  std::deque<Point> snake;
   Point food;
   int width, height;
   int score;

@@ -234,39 +234,67 @@ void DesktopView::draw(const GameInfo_t &game) {
 void DesktopView::drawGameStateScreen(const GameState &state,
                                       const GameInfo_t &game) {
   if (!painter.isActive()) painter.begin(this);
+
   static const QFont font("Arial", 25);
   static const QRect textRect(board_begin, board_begin, screenWidth - 20,
                               screenHeight - 20);
   static QTextOption textOption;
   static std::once_flag initFlag;
+
   std::call_once(initFlag, []() {
     textOption.setAlignment(Qt::AlignCenter);
     textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     textOption.setTabStopDistance(40);  // Увеличиваем расстояние между строками
   });
 
-  painter.setPen(Qt::white);
   painter.setFont(font);
+  painter.setPen(Qt::white);
 
   QString text;
   switch (state) {
     case GameState::START:
       text = "Press Enter to start";
+      painter.drawText(textRect, text, textOption);
       break;
     case GameState::PAUSE:
       text = "Game is paused\n\nPress P to resume";
+      painter.drawText(textRect, text, textOption);
       break;
     case GameState::GAMEOVER:
-      text =
-          QString("Game Over!\nScore: %1  Level: %2\n\nPress Enter to restart")
-              .arg(game.score)
-              .arg(game.level);
+      drawGameOverText(game, textRect, textOption);
       break;
     default:
       return;
   }
+}
 
-  painter.drawText(textRect, text, textOption);
+void DesktopView::drawGameOverText(const GameInfo_t &game,
+                                   const QRect &textRect,
+                                   const QTextOption &textOption) {
+  const QString commonText = "Press Enter to restart";
+
+  QRect topTextRect = textRect;
+  topTextRect.setHeight(textRect.height() / 2);
+
+  QRect bottomTextRect = textRect;
+  bottomTextRect.setHeight(textRect.height());
+
+  if (game.score >= 200 && state == MenuState::SNAKE_GAME) {
+    painter.setPen(Qt::green);
+    QString text = QString("YOU WON!\n\nScore: %1  Level: %2")
+                       .arg(game.score)
+                       .arg(game.level);
+    painter.drawText(topTextRect, text, textOption);
+  } else {
+    painter.setPen(Qt::red);
+    QString text = QString("GAME OVER!\n\nScore: %1  Level: %2")
+                       .arg(game.score)
+                       .arg(game.level);
+    painter.drawText(topTextRect, text, textOption);
+  }
+
+  painter.setPen(Qt::white);
+  painter.drawText(bottomTextRect, commonText, textOption);
 }
 
 void DesktopView::StartTheGame() {
@@ -345,7 +373,7 @@ void DesktopView::drawSidebar(const GameInfo_t &game) {
                    QString("Record: %1").arg(game.high_score));
   if (state == MenuState::SNAKE_GAME)
     painter.drawText(310 - borderOffset, 180 - borderOffset,
-                     QString("Speed: %1").arg(game.speed));
+                     QString("Speed: %1").arg(300 - game.speed));
 
   if (state == MenuState::TETRIS_GAME) {
     drawNextFigure(game);
