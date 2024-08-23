@@ -1,7 +1,7 @@
 #include "../include/Model.hpp"
 
 namespace s21 {
-constexpr int base_snake_size = 4;
+constexpr int kBaseSnakeSize = 4;
 
 SnakeModel::SnakeModel(int width, int height)
     : width(width),
@@ -21,7 +21,7 @@ void SnakeModel::ResetGame() {
   snake.clear();
   int startX = width / 2 - 1;
   int startY = height / 2;
-  for (int i = 0; i < base_snake_size; ++i) {
+  for (int i = 0; i < kBaseSnakeSize; ++i) {
     snake.push_back(Point(startX + i, startY));
   }
   generateFood();

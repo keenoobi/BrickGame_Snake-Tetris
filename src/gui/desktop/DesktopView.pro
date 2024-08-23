@@ -24,7 +24,7 @@ SOURCES += \
 HEADERS += \
     desktopview.h \
     ../../brick_game/controller/controller.h \
-    ../../brick_game/snake/backend/base_model.h \
+    ../../brick_game/base/base_model.h \
     ../../brick_game/snake/backend/snake_model.h \
     ../../brick_game/snake/data/data.h \
     ../../brick_game/tetris/tetris_model.h \

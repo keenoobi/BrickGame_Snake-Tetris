@@ -231,7 +231,9 @@ void View::drawGame(const GameInfo_t &game) {
 
   mvwprintw(sideBarWin, 2, 2, "Score: %d", game.score);
   mvwprintw(sideBarWin, 4, 2, "Level: %d", game.level);
-  mvwprintw(sideBarWin, 6, 2, "Speed: %d", game.speed);
+  mvwprintw(sideBarWin, 6, 2, "Record: %d", game.high_score);
+  if (state == MenuState::SNAKE_GAME)
+    mvwprintw(sideBarWin, 8, 2, "Speed: %d", game.speed);
   displayNextFigure(game);
   wrefresh(gameWin);
   wrefresh(sideBarWin);

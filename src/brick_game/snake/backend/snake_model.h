@@ -4,9 +4,8 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
-#include <vector>
 
-#include "base_model.h"
+#include "../../base/base_model.h"
 
 namespace s21 {
 
@@ -19,6 +18,11 @@ struct Point {
 };
 
 class SnakeModel : public BrickGame {
+  const int kBaseSnakeSize = 4;
+  const int kPointsPerLevel = 5;
+  const int kMaxLevel = 5;
+  const char* kFileName = "snake.record";
+
  public:
   using action = void (SnakeModel::*)();
   SnakeModel(int width = 10, int height = 20);
@@ -55,6 +59,8 @@ class SnakeModel : public BrickGame {
   void handleFoodConsumption();
   void updateGameBoard();
   static long long GetCurrentTimeInMilliseconds();
+  void LoadSnakeRecord();
+  void WriteSnakeRecord();
 
  private:
   long long lastUpdateTime;
@@ -64,6 +70,7 @@ class SnakeModel : public BrickGame {
   int score;
   int level;
   int speed;
+  int record;
   bool snake_moved;
   Direction currentDirection;
   std::vector<std::vector<int>> gameBoard;

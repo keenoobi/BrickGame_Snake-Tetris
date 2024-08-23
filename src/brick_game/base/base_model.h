@@ -1,7 +1,12 @@
 #ifndef based
 #define based
 
-#include "../data/data.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "../snake/data/data.h"
 
 namespace s21 {
 enum class Direction { UP, DOWN, LEFT, RIGHT };

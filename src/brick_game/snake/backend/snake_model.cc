@@ -1,7 +1,6 @@
 #include "snake_model.h"
 
 namespace s21 {
-constexpr int base_snake_size = 4;
 
 SnakeModel::SnakeModel(int width, int height)
     : width(width),
@@ -9,17 +8,19 @@ SnakeModel::SnakeModel(int width, int height)
       score(0),
       level(1),
       speed(300),
+      record(0),
       snake_moved(false),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
   lastUpdateTime = GetCurrentTimeInMilliseconds();
+  LoadSnakeRecord();
 }
 
 void SnakeModel::ResetGame() {
   snake.clear();
   int startX = width / 2 - 1;
   int startY = height / 2;
-  for (int i = 0; i < base_snake_size; ++i) {
+  for (int i = 0; i < kBaseSnakeSize; ++i) {
     snake.push_back(Point(startX + i, startY));
   }
   generateFood();
@@ -39,6 +40,7 @@ void SnakeModel::GetData(GameInfo_t& game) const {
     }
   }
   game.score = score;
+  game.high_score = record;
   game.level = level;
   game.speed = speed;
 }
@@ -118,9 +120,13 @@ bool SnakeModel::isCollisionWithBody(const Point& newHead) {
 
 void SnakeModel::handleFoodConsumption() {
   score++;
-  if (score % 5 == 0 && level < 10 && speed) {
+  if (score % kPointsPerLevel == 0 && level < kMaxLevel && speed) {
     level++;
-    speed -= 40;  // Увеличиваем скорость с каждым уровнем
+    speed -= 20;  // Увеличиваем скорость с каждым уровнем
+  }
+  if (score > record) {
+    record = score;
+    WriteSnakeRecord();
   }
   generateFood();
 }
@@ -216,5 +222,21 @@ void SnakeModel::Pause() {
 }
 
 void SnakeModel::GameOver() { setCurrentState(GameState::GAMEOVER); }
+
+void SnakeModel::LoadSnakeRecord() {
+  std::ifstream file(kFileName, std::ios::binary);
+  if (file.is_open()) {
+    file.read(reinterpret_cast<char*>(&record), sizeof(record));
+    file.close();
+  }
+}
+
+void SnakeModel::WriteSnakeRecord() {
+  std::ofstream file(kFileName, std::ios::binary);
+  if (file.is_open()) {
+    file.write(reinterpret_cast<const char*>(&record), sizeof(record));
+    file.close();
+  }
+}
 
 }  // namespace s21

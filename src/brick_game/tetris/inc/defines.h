@@ -4,7 +4,7 @@
 #define POINTS_PER_LEVEL 600
 #define EMPTY_CELL 0
 #define CONVERT_TO_CELL(x) (x + 1)
-#define RECORDS_FILE "record.save"
+#define RECORDS_FILE "tetris.record"
 
 #define ESC_KEY 27
 #define ENTER_KEY 10

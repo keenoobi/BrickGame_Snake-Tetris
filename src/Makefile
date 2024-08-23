@@ -5,13 +5,13 @@ CPPFLAGS=-Wall -Wextra -Werror -std=c++17
 CURSES=-lncurses
 DIR=
 DIST_DIR=archive
-TETRIS_PROJECT=$(wildcard brick_game/tetris/**/*.c) # list of all the C source files in the project
-SNAKE_PROJECT=$(wildcard brick_game/**/**/*.cc brick_game/**/*.cc gui/**/*.cc) # list of all the C source files in the project
+TETRIS_PROJECT=$(shell find brick_game/tetris backend_tests -type f -name '*.c') # list of all the C source files in the project
+SNAKE_PROJECT=$(shell find brick_game gui backend_tests -type f -name '*.cc') # list of all the C++ source files in the project
 TETRIS_SOURCES=$(filter-out backend_tests/%.c, $(TETRIS_PROJECT))
 SNAKE_SOURCES=$(filter-out gui/desktop/%.cc tetris.c, $(SNAKE_PROJECT))
-# TEST_SOURCES=$(filter-out %/tetris/tetris.c %/cli/tetris_frontend.c %/tetris/fsm/fsm_matrix.c, $(MAIN_PROJECT))
+TEST_SOURCES=$(shell find brick_game/tetris backend_tests -type f -name '*.c')
 MAIN=tetris.game
-# TEST_RESULT=backend_tests/test
+TEST_RESULT=backend_tests/test
 TETRIS_OBJECTS=$(TETRIS_SOURCES:.c=.o)
 SNAKE_OBJECTS=$(SNAKE_SOURCES:.cc=.o)
 TEST_OBJECTS=$(TEST_SOURCES:.c=.o)
@@ -46,11 +46,11 @@ uninstall: clean
 	@echo "Game Is Unistalled Successfully"
 
 test: $(TEST_OBJECTS) 
-	$(CC) $(CFLAGS) $^ -o $(TEST_RESULT) $(CHECK_LIB)
-	./$(TEST_RESULT)
+	@$(CC) $(CFLAGS) $^ -o $(TEST_RESULT) $(CHECK_LIB)
+	@./$(TEST_RESULT)
 
 $(RESULT): $(TETRIS_OBJECTS)
-	ar rc $(RESULT) $^
+	@ar rc $(RESULT) $^
 	echo "Static Library Created"
 
 dvi:
@@ -69,10 +69,10 @@ dist_unpack:
 
 
 .c.o:
-	$(CC) -c $(CFLAGS) $< -o $@
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 .cc.o:
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	@$(CPP) -c $(CPPFLAGS) $< -o $@
 
 gcov_report: $(TEST_SOURCES) 
 	$(CC) $(CFLAGS) --coverage $^ $(CHECK_LIB) -o $@
@@ -105,4 +105,4 @@ clean_dist:
 	@cd ../ && rm -rf archive.tar.gz
 
 remove_save:
-	@rm -rf $(DIR)record.save
+	@rm -rf $(DIR)tetris.record $(DIR)snake.record
