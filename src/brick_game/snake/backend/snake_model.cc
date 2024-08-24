@@ -68,7 +68,7 @@ void SnakeModel::moveSnake() {
     return;
   }
 
-  bool foodEaten = (newHead == food);
+  bool foodEaten = (newHead == food) || (snake.at(1) == food);
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
     gameBoard[snake.back().y][snake.back().x] = 0;

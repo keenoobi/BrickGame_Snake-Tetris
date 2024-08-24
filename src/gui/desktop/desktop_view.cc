@@ -1,4 +1,4 @@
-#include "desktopview.h"
+#include "desktop_view.h"
 
 namespace s21 {
 

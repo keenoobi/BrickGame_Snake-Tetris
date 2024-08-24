@@ -9,7 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    desktopview.cc \
+    desktop_view.cc\
     main.cc    \
     ../../brick_game/controller/controller.cc \
     ../../brick_game/snake/backend/snake_model.cc \
@@ -22,7 +22,7 @@ SOURCES += \
 
 
 HEADERS += \
-    desktopview.h \
+    desktop_view.h \
     ../../brick_game/controller/controller.h \
     ../../brick_game/base/base_model.h \
     ../../brick_game/snake/backend/snake_model.h \
