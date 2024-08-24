@@ -8,7 +8,7 @@ DIST_DIR=archive
 TETRIS_PROJECT=$(shell find brick_game/tetris backend_tests -type f -name '*.c') # list of all the C source files in the project
 SNAKE_PROJECT=$(shell find brick_game gui backend_tests -type f -name '*.cc') # list of all the C++ source files in the project
 TETRIS_SOURCES=$(filter-out backend_tests/%.c, $(TETRIS_PROJECT))
-SNAKE_SOURCES=$(filter-out gui/desktop/%.cc tetris.c, $(SNAKE_PROJECT))
+SNAKE_SOURCES=$(filter-out gui/desktop/%.cc backend_tests/%, $(SNAKE_PROJECT))
 TEST_SOURCES=$(shell find brick_game/tetris backend_tests -type f -name '*.c')
 MAIN=tetris.game
 TEST_RESULT=backend_tests/test
@@ -17,7 +17,7 @@ SNAKE_OBJECTS=$(SNAKE_SOURCES:.cc=.o)
 TEST_OBJECTS=$(TEST_SOURCES:.c=.o)
 RESULT=libtetris_game.a
 
-.PHONY: all clean install uninstall test gcov_report clang dvi dist rungame git
+.PHONY: all clean install uninstall test gcov_report clang dvi dist rungame rungamecli git
 OS := $(shell uname)
 ifeq ($(OS),Linux)
 	OPEN_COMMAND= xdg-open
@@ -38,7 +38,11 @@ show:
 	echo $(TETRIS_PROJECT)
 
 install:
-	cd gui/desktop && qmake && make && make clean && ./DesktopView.app/Contents/MacOS/DesktopView
+	cd gui/desktop && qmake && make
+
+uninstall: clean
+	@rm -f ./gui/desktop/DesktopView.app/Contents/MacOS/DesktopView
+	@echo "Game Is Unistalled Successfully"
 
 installcli: $(RESULT) $(SNAKE_OBJECTS)
 	@$(CPP) $(CPPFLAGS) $^ $(CURSES) -o $(DIR)$(MAIN)
@@ -92,6 +96,9 @@ valgrind:
 	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --read-var-info=yes $(TEST_RESULT)
 
 rungame: install
+	@./gui/desktop/DesktopView.app/Contents/MacOS/DesktopView
+
+rungamecli: installcli
 	@./$(DIR)$(MAIN)
 
 git:
@@ -99,8 +106,9 @@ git:
 	git commit
 	git push origin develop
 
-clean: clean_dist remove_save clean_desktop
-	rm -rf $(RESULT) $(TETRIS_OBJECTS) $(SNAKE_OBJECTS) $(TEST_OBJECTS) $(TEST_RESULT) gcov_report* *.gc* report/ *.o $(DIR)$(MAIN)
+clean: clean_dist remove_save
+	@rm -rf $(RESULT) $(TETRIS_OBJECTS) $(SNAKE_OBJECTS) $(TEST_OBJECTS) $(TEST_RESULT) gcov_report* *.gc* report/ *.o $(DIR)$(MAIN)
+	@make clean_desktop
 	@echo "Everything is cleaned"
 
 clean_desktop:
