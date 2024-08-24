@@ -57,7 +57,7 @@ void SnakeModel::generateFood() {
   do {
     food.x = rand() % width;
     food.y = rand() % height;
-  } while (isCollisionWithBody(food));
+  } while (isCollisionWithBody(food) || gameBoard[food.y][food.x] != 0);
 }
 
 void SnakeModel::moveSnake() {
@@ -68,7 +68,7 @@ void SnakeModel::moveSnake() {
     return;
   }
 
-  bool foodEaten = (newHead == food) || (snake.at(1) == food);
+  bool foodEaten = (newHead == food);
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
     gameBoard[snake.back().y][snake.back().x] = 0;
@@ -119,19 +119,29 @@ bool SnakeModel::isCollisionWithBody(const Point& newHead) {
 
 void SnakeModel::handleFoodConsumption() {
   score++;
-  if (score % kPointsPerLevel == 0 && level < kMaxLevel && speed) {
+  if (score == 200) {
+    setCurrentState(GameState::GAMEOVER);
+    return;
+  } else if (score % kPointsPerLevel == 0 && level < kMaxLevel && speed) {
     level++;
     speed -= 21;  // Увеличиваем скорость с каждым уровнем
   }
+
   if (score > record) {
     record = score;
     WriteSnakeRecord();
   }
-  if (score == 200) setCurrentState(GameState::GAMEOVER);
   generateFood();
 }
 
 void SnakeModel::updateGameBoard() {
+  // Очищаем игровую доску
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      gameBoard[i][j] = 0;
+    }
+  }
+
   for (const auto& part : snake) {
     gameBoard[part.y][part.x] = 5;  // Змейка будет представлена 5
   }

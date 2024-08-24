@@ -37,7 +37,8 @@ class DesktopView : public QOpenGLWidget {
   void drawNextFigure(const GameInfo_t &game);
   void drawGameField(const GameInfo_t &game);
   void drawGameStateScreen(const GameState &state, const GameInfo_t &game);
-  void drawGameOverText(const GameInfo_t &game, const QRect &textRect, const QTextOption &textOption);
+  void drawGameOverText(const GameInfo_t &game, const QRect &textRect,
+                        const QTextOption &textOption);
   void InitColors();
   void SignalProcessing(QKeyEvent *);
   void MenuProcessing();

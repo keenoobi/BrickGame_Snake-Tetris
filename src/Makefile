@@ -37,11 +37,14 @@ show:
 	echo $(SNAKE_PROJECT)
 	echo $(TETRIS_PROJECT)
 
-install: $(RESULT) $(SNAKE_OBJECTS)
+install:
+	cd gui/desktop && qmake && make && make clean && ./DesktopView.app/Contents/MacOS/DesktopView
+
+installcli: $(RESULT) $(SNAKE_OBJECTS)
 	@$(CPP) $(CPPFLAGS) $^ $(CURSES) -o $(DIR)$(MAIN)
 	@echo "Game Installed Successfully"
 
-uninstall: clean
+uninstallcli: clean
 	@rm -f $(DIR)$(MAIN)
 	@echo "Game Is Unistalled Successfully"
 
@@ -96,13 +99,16 @@ git:
 	git commit
 	git push origin develop
 
-clean: clean_dist remove_save
+clean: clean_dist remove_save clean_desktop
 	rm -rf $(RESULT) $(TETRIS_OBJECTS) $(SNAKE_OBJECTS) $(TEST_OBJECTS) $(TEST_RESULT) gcov_report* *.gc* report/ *.o $(DIR)$(MAIN)
 	@echo "Everything is cleaned"
+
+clean_desktop:
+	@cd gui/desktop && make distclean && rm .qmake.stash
 
 clean_dist:
 	@cd ../ && rm -rf archive
 	@cd ../ && rm -rf archive.tar.gz
 
 remove_save:
-	@rm -rf $(DIR)tetris.record $(DIR)snake.record
+	@rm -rf $(shell find . -type f -name '*.record') $(DIR)tetris.record $(DIR)snake.record
