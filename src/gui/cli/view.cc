@@ -158,11 +158,11 @@ void View::ApplyChoice(int &choice) {
 void View::DrawMenu(const std::vector<std::string> &options, int &menu_option) {
   box(menu_win_, 0, 0);
   for (int i = 0; i < 3; i++) {
-    mvwprintw(menu_win_, i + 1, 2, "%s", options[i].c_str());
+    mvwprintw(menu_win_, i * 2 + 8, 15, "%s", options[i].c_str());
     if (i == menu_option) {
-      wattron(menu_win_, A_REVERSE);
-      mvwprintw(menu_win_, i + 1, 2, "%s", options[i].c_str());
-      wattroff(menu_win_, A_REVERSE);
+      wattron(menu_win_, COLOR_PAIR(7) | COLOR_BLACK | A_BOLD);
+      mvwprintw(menu_win_, i * 2 + 8, 15, "%s", options[i].c_str());
+      wattroff(menu_win_, COLOR_PAIR(7) | COLOR_BLACK | A_BOLD);
     }
   }
   wrefresh(menu_win_);

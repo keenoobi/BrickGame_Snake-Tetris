@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TETRIS DVI</title>
+</head>
+
+<body>
+    <textarea theme="slate">
+
+# BrickGame v1.0 aka Tetris
+
+BrickGame v1.0 is a Tetris game designed for terminal, created in the C programming language with the ncurses library. It offers the traditional Tetris gameplay along with features like scoring, advancing levels, and keeping track of high scores.
+
+## Features
+
+- Classic Tetris gameplay with the following mechanics:
+    - Tetrominoes Rotation (even near the walls of the well)
+    - Horizontal movement of tetrominoes
+    - Accelerated tetromino falling (by holding the down arrow key)
+    - Display of the next tetromino
+    - Line clearing (up to 4)
+    - Game over when the tetromino reaches the top of the well
+- Support for all physical buttons on the console:
+    - Start game - Enter
+    - Pause - P
+    - End game - Esc
+    - Left arrow - move tetromino left
+    - Right arrow - move tetromino right
+    - Down arrow - accelerate tetromino falling
+    - Up arrow - rotate tetromino (R-key also available to rotate the figure)
+- Matrix-based game field with dimensions corresponding to the console's size (10x20 pixels)
+- Proper stopping of tetrominoes after reaching the bottom or colliding with another tetromino
+- Unit tests for the game logic library, achieving at least 80% code coverage
+
+
+### Score Calculation
+
+- 1 line cleared: 100 points
+- 2 lines cleared: 300 points
+- 3 lines cleared: 700 points
+- 4 lines cleared: 1500 points
+
+### High Score Tracking
+
+- Display of the player's current score and highest score achieved
+- Highest score is stored in a file and persists between game sessions
+
+### Level Progression
+
+- Progression of levels every 600 points
+- Increasing level increases the speed of tetromino falling
+
+## Installation
+
+1. Clone the repository.
+2. Navigate to the `src/` directory.
+3. Run `make install` to install the project.
+4. Run `make rungame` to start playing.
+
+Or just use `make all` to install and run the game.
+
+## Usage
+
+- Use the arrow keys to move and rotate tetrominoes.
+- Press the down arrow key to make tetrominoes fall faster.
+- Press the up arrow key to rotate tetrominoes.
+
+## Finite State Machine (FSM) Diagram
+
+![FSM Diagram](media/fsm/tetris_fsm.png)
+    
+
+
+# BrickGame v2.0 aka Snake
+
+BrickGame v2.0 is a Snake game designed for desktop, created in the C++ programming language using a GUI library. It offers classic Snake gameplay along with features like scoring, level progression, and high score tracking.
+
+## Features
+
+- Classic Snake gameplay with the following mechanics:
+    - Snake moves autonomously one block forward after each game timer tick.
+    - Snake's length increases by one when it collides with an "apple".
+    - Game ends with a win if the snake's length reaches 200 units.
+    - Game ends with a loss if the snake collides with the boundary or itself.
+    - User can change the snake's direction using arrow keys, with turns limited to left and right.
+    - User can accelerate the snake's movement by holding the action key.
+- Initial snake length is four "pixels".
+- Game field size is 10 "pixels" wide and 20 "pixels" high.
+- Support for all physical buttons on the console:
+    - Start game - Enter
+    - Pause - P
+    - End game - Esc
+    - Left arrow - move snake left
+    - Right arrow - move snake right
+    - Up arrow - move snake up
+    - Down arrow - move snake down
+- Finite State Machine (FSM) to formalize game logic.
+- Unit tests for the game logic library, achieving at least 80% code coverage using GTest.
+
+### Score Calculation
+
+- 1 point for each "apple" eaten.
+
+### High Score Tracking
+
+- Display of the player's current score and highest score achieved.
+- Highest score is stored in a file or embedded database and persists between game sessions.
+
+### Level Progression
+
+- Level increases by 1 every 5 points.
+- Increasing level increases the speed of the snake.
+- Maximum level is 10.
+
+## Installation
+
+1. Clone the repository.
+2. Navigate to the `src/` directory.
+3. Run `make install` to install the project.
+4. Run `make rungame` to start playing.
+
+Or just use `make all` to install and run the game.
+
+## Usage
+
+- Use the arrow keys to change the snake's direction.
+- Hold the action key to accelerate the snake's movement.
+
+## Finite State Machine (FSM) Diagram
+
+A diagram detailing all states and transitions for the implemented FSM will be provided in the project documentation.
+
+## Additional Features
+
+- Score and high score tracking.
+- Level progression with increased speed.
+
+## Development Guidelines
+
+- Developed in C++17.
+- Code follows Google Style.
+- Classes are implemented within the `s21` namespace.
+- Code is organized using the MVC pattern.
+- Business logic is separated from the interface code.
+- Thin controllers.
+- GUI library options: Qt, GTK+.
+- Makefile with standard GNU targets: all, install, uninstall, clean, dvi, dist, tests.
+- Installation to an arbitrary directory.
+
+## Testing
+
+- Unit tests for the game logic library using GTest.
+- Coverage of at least 80%.
+
+## Project Structure
+
+- `src/brick_game/snake` - Game logic library.
+- `src/gui/desktop` - Desktop interface code.
+
+## Documentation
+
+- FSM diagram detailing all states and transitions.
+
+![Tetris FSM Diagram](media/fsm/snake_fsm.png)!
+
+
+
+</textarea>
+    <script type="text/javascript" src="https://lbesson.bitbucket.io/md/strapdown.min.js"></script>
+    <script src="resize_images_script.js"></script>
+</body>
+
+</html>

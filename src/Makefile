@@ -17,7 +17,7 @@ SNAKE_OBJECTS=$(SNAKE_SOURCES:.cc=.o)
 TETRIS=tetris.game
 SNAKE=snake.game
 
-TETRIS_TEST_SOURCES=$(filter-out $(TESTS_DIR)/snake/% %.cc gui/%, $(MAIN_PROJECT))
+TETRIS_TEST_SOURCES=$(filter-out $(TESTS_DIR)/snake/% %.cc gui/% %/fsm_matrix.c, $(MAIN_PROJECT))
 SNAKE_TEST_SOURCES=$(filter-out $(TESTS_DIR)/tetris/% %.c gui/% %/tetris_model.cc %/controller.cc, $(MAIN_PROJECT))
 TETRIS_TEST_OBJECTS=$(TETRIS_TEST_SOURCES:.c=.o)
 SNAKE_TEST_OBJECTS=$(SNAKE_TEST_SOURCES:.cc=.o)
@@ -27,6 +27,7 @@ SNAKE_TEST=$(TESTS_DIR)/snake_tests/test
 STATIC_LIB=libtetris_game.a
 
 .PHONY: all clean install uninstall test gcov_report clang dvi dist rungame rungamecli git
+
 OS := $(shell uname)
 ifeq ($(OS),Linux)
 	OPEN_COMMAND= xdg-open
@@ -43,14 +44,6 @@ ifeq ($(OS),Darwin)
 endif
 
 all: rungame
-
-# show:
-# 	@echo $(TETRIS_SOURCES)
-# 	@echo " "
-# 	@echo $(TETRIS_TEST_OBJECTS)
-# 	@echo " "
-# 	@echo $(SNAKE_TEST_OBJECTS)
-
 
 install:
 	@cd gui/desktop && qmake && make
@@ -123,12 +116,12 @@ gcov_report_tetris: $(TETRIS_TEST_SOURCES)
 clang:
 	clang-format -style=Google -n $(MAIN_PROJECT)
 
-valgrind:
-	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --read-var-info=yes $(TETRIS_TEST)
+valgrind: tests
 	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --read-var-info=yes $(SNAKE_TEST)
+	CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --read-var-info=yes $(TETRIS_TEST)
 
 rungame: install
-	./$(QT_VIEW_DIR)/snake.game
+	@./$(QT_VIEW_DIR)/snake.game
 
 rungamecli: installcli
 	@./$(DIR)$(TETRIS)

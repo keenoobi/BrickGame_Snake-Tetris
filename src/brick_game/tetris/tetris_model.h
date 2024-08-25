@@ -1,11 +1,11 @@
 #ifndef TetrisModel_hpp
 #define TetrisModel_hpp
 
-#include "../base/base_model.h"
-
 extern "C" {
 #include "tetris_backend.h"
 }
+
+#include "../base/base_model.h"
 
 namespace s21 {
 
