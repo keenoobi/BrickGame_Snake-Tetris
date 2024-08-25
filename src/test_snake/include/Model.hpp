@@ -29,7 +29,7 @@ class SnakeModel : public BrickGame {
   const std::vector<Point>& getSnake() const;
   const Point& getFood() const;
   Direction getCurrentDirection() const;
-  bool CurrentDirectionIsNot(Direction) const;
+  bool CurrentDirectionIs(Direction) const;
   void setCurrentDirection(Direction);
 
   GameState getCurrentState() const override;

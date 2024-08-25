@@ -149,7 +149,7 @@ void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
 GameState SnakeModel::getCurrentState() const { return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
-inline bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {
+inline bool SnakeModel::CurrentDirectionIs(Direction dir) const {
   return currentDirection != dir;
 }
 
@@ -163,8 +163,8 @@ void SnakeModel::moveForward() {
 }
 
 void SnakeModel::moveUp() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::DOWN)) {
-    if (CurrentDirectionIsNot(Direction::UP)) {
+  if (snake_moved && CurrentDirectionIs(Direction::DOWN)) {
+    if (CurrentDirectionIs(Direction::UP)) {
       setCurrentDirection(Direction::UP);
       snake_moved = false;
     } else
@@ -173,8 +173,8 @@ void SnakeModel::moveUp() {
 }
 
 void SnakeModel::moveDown() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::UP)) {
-    if (CurrentDirectionIsNot(Direction::DOWN)) {
+  if (snake_moved && CurrentDirectionIs(Direction::UP)) {
+    if (CurrentDirectionIs(Direction::DOWN)) {
       setCurrentDirection(Direction::DOWN);
       snake_moved = false;
     } else
@@ -183,8 +183,8 @@ void SnakeModel::moveDown() {
 }
 
 void SnakeModel::moveRight() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::LEFT)) {
-    if (CurrentDirectionIsNot(Direction::RIGHT)) {
+  if (snake_moved && CurrentDirectionIs(Direction::LEFT)) {
+    if (CurrentDirectionIs(Direction::RIGHT)) {
       setCurrentDirection(Direction::RIGHT);
       snake_moved = false;
     } else
@@ -193,8 +193,8 @@ void SnakeModel::moveRight() {
 }
 
 void SnakeModel::moveLeft() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::RIGHT)) {
-    if (CurrentDirectionIsNot(Direction::LEFT)) {
+  if (snake_moved && CurrentDirectionIs(Direction::RIGHT)) {
+    if (CurrentDirectionIs(Direction::LEFT)) {
       setCurrentDirection(Direction::LEFT);
       snake_moved = false;
     } else

@@ -2,14 +2,15 @@
 
 namespace s21 {
 
-SnakeModel::SnakeModel(int width, int height)
-    : width(width),
-      height(height),
+SnakeModel::SnakeModel()
+    : width(10),
+      height(20),
       score(0),
       level(1),
       speed(300),
       record(0),
       snake_moved(false),
+      foodEaten(false),
       currentDirection(Direction::LEFT),
       gameBoard(height, std::vector<int>(width, 0)),
       currentState(GameState::START) {
@@ -68,7 +69,8 @@ void SnakeModel::moveSnake() {
     return;
   }
 
-  bool foodEaten = (newHead == food);
+  setFoodEaten(newHead == food);
+
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
     gameBoard[snake.back().y][snake.back().x] = 0;
@@ -163,8 +165,14 @@ void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
 GameState SnakeModel::getCurrentState() const { return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
-inline bool SnakeModel::CurrentDirectionIsNot(Direction dir) const {
-  return currentDirection != dir;
+inline bool SnakeModel::CurrentDirectionIs(Direction dir) const {
+  return currentDirection == dir;
+}
+inline void SnakeModel::setSnakeMoved(bool status) { snake_moved = status; }
+inline void SnakeModel::setFoodEaten(bool status) { foodEaten = status; }
+void SnakeModel::setFood(int x, int y) {
+  food.x = x;
+  food.y = y;
 }
 
 void SnakeModel::moveForward() {
@@ -172,45 +180,45 @@ void SnakeModel::moveForward() {
   if (currentTime - lastUpdateTime >= speed) {
     moveSnake();
     lastUpdateTime = currentTime;
-    snake_moved = true;
+    setSnakeMoved(true);
   }
 }
 
 void SnakeModel::moveUp() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::DOWN)) {
-    if (CurrentDirectionIsNot(Direction::UP)) {
+  if (snake_moved && !CurrentDirectionIs(Direction::DOWN)) {
+    if (!CurrentDirectionIs(Direction::UP)) {
       setCurrentDirection(Direction::UP);
-      snake_moved = false;
+      setSnakeMoved(false);
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveDown() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::UP)) {
-    if (CurrentDirectionIsNot(Direction::DOWN)) {
+  if (snake_moved && !CurrentDirectionIs(Direction::UP)) {
+    if (!CurrentDirectionIs(Direction::DOWN)) {
       setCurrentDirection(Direction::DOWN);
-      snake_moved = false;
+      setSnakeMoved(false);
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveRight() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::LEFT)) {
-    if (CurrentDirectionIsNot(Direction::RIGHT)) {
+  if (snake_moved && !CurrentDirectionIs(Direction::LEFT)) {
+    if (!CurrentDirectionIs(Direction::RIGHT)) {
       setCurrentDirection(Direction::RIGHT);
-      snake_moved = false;
+      setSnakeMoved(false);
     } else
       moveSnake();
   }
 }
 
 void SnakeModel::moveLeft() {
-  if (snake_moved && CurrentDirectionIsNot(Direction::RIGHT)) {
-    if (CurrentDirectionIsNot(Direction::LEFT)) {
+  if (snake_moved && !CurrentDirectionIs(Direction::RIGHT)) {
+    if (!CurrentDirectionIs(Direction::LEFT)) {
       setCurrentDirection(Direction::LEFT);
-      snake_moved = false;
+      setSnakeMoved(false);
     } else
       moveSnake();
   }

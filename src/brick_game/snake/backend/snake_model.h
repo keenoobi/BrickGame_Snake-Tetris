@@ -26,7 +26,7 @@ class SnakeModel : public BrickGame {
 
  public:
   using action = void (SnakeModel::*)();
-  SnakeModel(int width = 10, int height = 20);
+  SnakeModel();
   ~SnakeModel() = default;
   void ResetGame();
   void GetData(GameInfo_t& game) const override;
@@ -34,14 +34,19 @@ class SnakeModel : public BrickGame {
   const std::deque<Point>& getSnake() const;
   const Point& getFood() const;
   Direction getCurrentDirection() const;
-  bool CurrentDirectionIsNot(Direction) const;
+  bool CurrentDirectionIs(Direction) const;
   void setCurrentDirection(Direction);
 
   GameState getCurrentState() const override;
   void setCurrentState(GameState);
+  void handleEvent(Signals) override;
+  void setSnakeMoved(bool);
+  void setFoodEaten(bool);
+  void setFood(int, int);
+  void LoadSnakeRecord();
+  void WriteSnakeRecord();
 
  private:
-  void handleEvent(Signals) override;
   void moveForward();
   void moveUp();
   void moveDown();
@@ -60,8 +65,6 @@ class SnakeModel : public BrickGame {
   void handleFoodConsumption();
   void updateGameBoard();
   static long long GetCurrentTimeInMilliseconds();
-  void LoadSnakeRecord();
-  void WriteSnakeRecord();
 
  private:
   long long lastUpdateTime;
@@ -72,7 +75,7 @@ class SnakeModel : public BrickGame {
   int level;
   int speed;
   int record;
-  bool snake_moved;
+  bool snake_moved, foodEaten;
   Direction currentDirection;
   std::vector<std::vector<int>> gameBoard;
 
