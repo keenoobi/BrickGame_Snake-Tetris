@@ -72,14 +72,13 @@ void SnakeModel::MoveSnake() {
 
   SetFoodEaten(newHead == food_);
 
-  
   if (!food_eaten_) {
     game_board_[snake_.back().y][snake_.back().x] = 0;
     snake_.pop_back();
   } else {
     HandleFoodConsumption();
   }
-  
+
   snake_.push_front(newHead);
 
   UpdateGameBoard();
@@ -127,7 +126,7 @@ void SnakeModel::HandleFoodConsumption() {
     return;
   } else if (score_ % kPointsPerLevel == 0 && level_ < kMaxLevel && speed_) {
     level_++;
-    speed_ -= 21;  
+    speed_ -= 21;
   }
 
   if (score_ > record_) {
@@ -138,7 +137,6 @@ void SnakeModel::HandleFoodConsumption() {
 }
 
 void SnakeModel::UpdateGameBoard() {
-  
   for (int i = 0; i < height_; ++i) {
     for (int j = 0; j < width_; ++j) {
       game_board_[i][j] = 0;
@@ -146,10 +144,10 @@ void SnakeModel::UpdateGameBoard() {
   }
 
   for (const auto& part : snake_) {
-    game_board_[part.y][part.x] = 5;  
+    game_board_[part.y][part.x] = 5;
   }
-  game_board_[snake_.front().y][snake_.front().x] = 4;  
-  game_board_[food_.y][food_.x] = 7;  
+  game_board_[snake_.front().y][snake_.front().x] = 4;
+  game_board_[food_.y][food_.x] = 7;
 }
 
 long long SnakeModel::GetCurrentTimeInMilliseconds() {
