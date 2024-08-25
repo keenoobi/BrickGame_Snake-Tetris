@@ -7,9 +7,6 @@
 
 #include "../../brick_game/controller/controller.h"
 
-// #define ENTER_KEY 10
-// #define ESC_KEY 27
-
 namespace s21 {
 
 class View {

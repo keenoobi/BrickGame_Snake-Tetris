@@ -25,7 +25,6 @@ DesktopView::DesktopView()
 DesktopView::~DesktopView() { MemoryDeallocation(); }
 
 void DesktopView::InitColors() {
-  // Создаем словарь для соответствия значений и цветов
   color_map_[1] = Qt::cyan;
   color_map_[2] = Qt::blue;
   color_map_[3] = Qt::white;
@@ -78,23 +77,19 @@ void DesktopView::paintGL() {
 
   SetClearColor(Qt::black);
 
-  if (!painter_.isActive()) painter_.begin(this);  // Начало рисования
+  if (!painter_.isActive()) painter_.begin(this);
   MenuProcessing();
-  painter_.end();  // Конец рисования
+  painter_.end();
 }
 
 void DesktopView::keyPressEvent(QKeyEvent *event) {
   SignalProcessing(event);
-  update();  // Перерисовываем виджет, чтобы отразить изменения
+  update();
   QOpenGLWidget::keyPressEvent(event);
 }
 
 void DesktopView::SetClearColor(const QColor &color) {
-  glClearColor(color.redF(),    // Красный компонент (0.0 - 1.0)
-               color.greenF(),  // Зеленый компонент (0.0 - 1.0)
-               color.blueF(),   // Синий компонент (0.0 - 1.0)
-               color.alphaF()   // Альфа компонент (0.0 - 1.0)
-  );
+  glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
 void DesktopView::MenuProcessing() {
@@ -109,7 +104,7 @@ void DesktopView::MenuProcessing() {
       StartTheGame();
       break;
     case MenuState::kExitMenu:
-      close();  // Закрываем окно при выборе "Exit"
+      close();
       break;
     default:
       break;
@@ -244,7 +239,7 @@ void DesktopView::DrawGameStateScreen(const GameState &state,
   std::call_once(initFlag, []() {
     textOption.setAlignment(Qt::AlignCenter);
     textOption.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
-    textOption.setTabStopDistance(40);  // Увеличиваем расстояние между строками
+    textOption.setTabStopDistance(40);
   });
 
   painter_.setFont(font);
@@ -298,8 +293,8 @@ void DesktopView::DrawGameOverText(const GameInfo_t &game,
 }
 
 void DesktopView::StartTheGame() {
-  UpdateGame();  // Обновление игры
-  game_timer_->start(10);  // 10 миллисекунд между обновлениями
+  UpdateGame();
+  game_timer_->start(10);
 }
 
 void DesktopView::UpdateGame() {
@@ -307,8 +302,8 @@ void DesktopView::UpdateGame() {
   if (game_state_ != GameState::kExit) {
     controller_.GameProcessing(signal_);
     controller_.GetData(current_game_);
-    Draw(current_game_);  // Отрисовка игры
-    update();             // Перерисовка виджета
+    Draw(current_game_);
+    update();
     signal_ = Signals::kNone;
   } else {
     menu_state_ = MenuState::kMenu;
@@ -398,13 +393,10 @@ void DesktopView::drawOuterFrame() {
 void DesktopView::DrawGame(const GameInfo_t &game) {
   if (!painter_.isActive()) painter_.begin(this);
 
-  // Draw outer frame
   drawOuterFrame();
 
-  // Draw game field
   DrawGameField(game);
 
-  // Draw sidebar
   DrawSidebar(game);
 }
 

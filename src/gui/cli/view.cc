@@ -216,8 +216,8 @@ void View::DrawPauseScreen(const GameState &state) {
 }
 
 void View::DrawGame(const GameInfo_t &game) {
-  box(game_win_, 0, 0);     // Draw a border around the window
-  box(sidebar_win_, 0, 0);  // Draw a border around the window
+  box(game_win_, 0, 0);
+  box(sidebar_win_, 0, 0);
 
   for (int i = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
