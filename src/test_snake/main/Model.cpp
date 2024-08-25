@@ -4,99 +4,100 @@ namespace s21 {
 constexpr int kBaseSnakeSize = 4;
 
 SnakeModel::SnakeModel(int width, int height)
-    : width(width),
-      height(height),
-      score(0),
-      level(1),
-      speed(300),
+    : width_(width),
+      height_(height),
+      score_(0),
+      level_(1),
+      speed_(300),
       snake_moved(false),
       accelerationSpeed(100),
       acceleration(false),
-      gameBoard(height, std::vector<int>(width, 0)),
-      currentState(GameState::START) {
-  lastUpdateTime = GetCurrentTimeInMilliseconds();
+      game_board_(height, std::vector<int>(width, 0)),
+      currentState(GameState::kStart) {
+  last_update_time_ = GetCurrentTimeInMilliseconds();
 }
 
 void SnakeModel::ResetGame() {
   snake.clear();
-  int startX = width / 2 - 1;
-  int startY = height / 2;
+  int startX = width_ / 2 - 1;
+  int startY = height_ / 2;
   for (int i = 0; i < kBaseSnakeSize; ++i) {
     snake.push_back(Point(startX + i, startY));
   }
-  generateFood();
-  score = 0;
-  level = 1;
-  speed = 300;
-  gameBoard = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
-  currentDirection = Direction::LEFT;
-  currentState = GameState::START;
-  updateGameBoard();
+  GenerateFood();
+  score_ = 0;
+  level_ = 1;
+  speed_ = 300;
+  game_board_ =
+      std::vector<std::vector<int>>(height_, std::vector<int>(width_, 0));
+  current_direction_ = Direction::kLeft;
+  currentState = GameState::kStart;
+  UpdateGameBoard();
 }
 
 void SnakeModel::GetData(GameInfo_t& game) const {
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
-      game.field[i][j] = gameBoard[i][j];
+  for (int i = 0; i < height_; ++i) {
+    for (int j = 0; j < width_; ++j) {
+      game.field[i][j] = game_board_[i][j];
     }
   }
-  game.score = score;
-  game.level = level;
-  game.speed = speed;
+  game.score = score_;
+  game.level = level_;
+  game.speed = speed_;
 }
 
-void SnakeModel::handleEvent(Signals signal) {
+void SnakeModel::HandleEvent(Signals signal) {
   action act =
-      fsm_table[static_cast<int>(currentState)][static_cast<int>(signal)];
+      fsm_table_[static_cast<int>(currentState)][static_cast<int>(signal)];
 
   if (act) (this->*act)();
 }
 
-void SnakeModel::generateFood() {
+void SnakeModel::GenerateFood() {
   do {
-    food.x = rand() % width;
-    food.y = rand() % height;
-  } while (isCollisionWithBody(food));
+    food_.x = rand() % width_;
+    food_.y = rand() % height_;
+  } while (CollisionWithBody(food_));
 }
 
-void SnakeModel::moveSnake() {
-  Point newHead = calculateNewHead(snake.front());
+void SnakeModel::MoveSnake() {
+  Point newHead = CalculateNewHead(snake.front());
 
-  if (isOutOfBounds(newHead) || isCollisionWithBody(newHead)) {
-    setCurrentState(GameState::GAMEOVER);
+  if (OutOfBounds(newHead) || CollisionWithBody(newHead)) {
+    setCurrentState(GameState::kGameOver);
     return;
   }
 
-  bool foodEaten = (newHead == food);
+  bool foodEaten = (newHead == food_);
 
   // Удаляем хвост, если змейка не съела еду
   if (!foodEaten) {
-    gameBoard[snake.back().y][snake.back().x] = 0;
+    game_board_[snake.back().y][snake.back().x] = 0;
     snake.pop_back();
   } else if (foodEaten) {
-    handleFoodConsumption();
+    HandleFoodConsumption();
   }
 
   // Добавляем новую голову
   snake.insert(snake.begin(), newHead);
 
-  updateGameBoard();
+  UpdateGameBoard();
 }
 
-Point SnakeModel::calculateNewHead(const Point& head) {
+Point SnakeModel::CalculateNewHead(const Point& head) {
   Point newHead(head.x, head.y);
 
-  switch (currentDirection) {
-    case Direction::UP:
+  switch (current_direction_) {
+    case Direction::kUp:
       newHead.y--;
       break;
-    case Direction::DOWN:
+    case Direction::kDown:
       newHead.y++;
       break;
-    case Direction::LEFT:
+    case Direction::kLeft:
       newHead.x--;
       break;
-    case Direction::RIGHT:
+    case Direction::kRight:
       newHead.x++;
       break;
   }
@@ -104,12 +105,12 @@ Point SnakeModel::calculateNewHead(const Point& head) {
   return newHead;
 }
 
-bool SnakeModel::isOutOfBounds(const Point& newHead) {
-  return newHead.x < 0 || newHead.x >= width || newHead.y < 0 ||
-         newHead.y >= height;
+bool SnakeModel::OutOfBounds(const Point& newHead) {
+  return newHead.x < 0 || newHead.x >= width_ || newHead.y < 0 ||
+         newHead.y >= height_;
 }
 
-bool SnakeModel::isCollisionWithBody(const Point& newHead) {
+bool SnakeModel::CollisionWithBody(const Point& newHead) {
   for (const auto& part : snake) {
     if (part == newHead) {
       return true;
@@ -118,21 +119,21 @@ bool SnakeModel::isCollisionWithBody(const Point& newHead) {
   return false;
 }
 
-void SnakeModel::handleFoodConsumption() {
-  score++;
-  if (score % 5 == 0 && level < 10 && speed) {
-    level++;
-    speed -= 40;  // Увеличиваем скорость с каждым уровнем
+void SnakeModel::HandleFoodConsumption() {
+  score_++;
+  if (score_ % 5 == 0 && level_ < 10 && speed_) {
+    level_++;
+    speed_ -= 40;  // Увеличиваем скорость с каждым уровнем
   }
-  generateFood();
+  GenerateFood();
 }
 
-void SnakeModel::updateGameBoard() {
+void SnakeModel::UpdateGameBoard() {
   for (const auto& part : snake) {
-    gameBoard[part.y][part.x] = 5;  // Змейка будет представлена 5
+    game_board_[part.y][part.x] = 5;  // Змейка будет представлена 5
   }
-  gameBoard[snake.front().y][snake.front().x] = 4;  // Голова змейки 4
-  gameBoard[food.y][food.x] = 7;  // Еда будет представлена 7
+  game_board_[snake.front().y][snake.front().x] = 4;  // Голова змейки 4
+  game_board_[food_.y][food_.x] = 7;  // Еда будет представлена 7
 }
 
 long long SnakeModel::GetCurrentTimeInMilliseconds() {
@@ -143,80 +144,82 @@ long long SnakeModel::GetCurrentTimeInMilliseconds() {
 }
 
 const std::vector<Point>& SnakeModel::getSnake() const { return snake; }
-const Point& SnakeModel::getFood() const { return food; }
-Direction SnakeModel::getCurrentDirection() const { return currentDirection; }
-void SnakeModel::setCurrentDirection(Direction dir) { currentDirection = dir; }
-GameState SnakeModel::getCurrentState() const { return currentState; }
+const Point& SnakeModel::GetFood() const { return food_; }
+Direction SnakeModel::GetCurrentDirection() const { return current_direction_; }
+void SnakeModel::SetCurrentDirection(Direction dir) {
+  current_direction_ = dir;
+}
+GameState SnakeModel::GetCurrentState() const { return currentState; }
 void SnakeModel::setCurrentState(GameState state) { currentState = state; }
 
 inline bool SnakeModel::CurrentDirectionIs(Direction dir) const {
-  return currentDirection != dir;
+  return current_direction_ != dir;
 }
 
-void SnakeModel::moveForward() {
+void SnakeModel::MoveForward() {
   long long currentTime = GetCurrentTimeInMilliseconds();
-  if (currentTime - lastUpdateTime >= speed) {
-    moveSnake();
-    lastUpdateTime = currentTime;
+  if (currentTime - last_update_time_ >= speed_) {
+    MoveSnake();
+    last_update_time_ = currentTime;
     snake_moved = true;
   }
 }
 
 void SnakeModel::moveUp() {
-  if (snake_moved && CurrentDirectionIs(Direction::DOWN)) {
-    if (CurrentDirectionIs(Direction::UP)) {
-      setCurrentDirection(Direction::UP);
+  if (snake_moved && CurrentDirectionIs(Direction::kDown)) {
+    if (CurrentDirectionIs(Direction::kUp)) {
+      SetCurrentDirection(Direction::kUp);
       snake_moved = false;
     } else
-      moveSnake();
+      MoveSnake();
   }
 }
 
-void SnakeModel::moveDown() {
-  if (snake_moved && CurrentDirectionIs(Direction::UP)) {
-    if (CurrentDirectionIs(Direction::DOWN)) {
-      setCurrentDirection(Direction::DOWN);
+void SnakeModel::MoveDown() {
+  if (snake_moved && CurrentDirectionIs(Direction::kUp)) {
+    if (CurrentDirectionIs(Direction::kDown)) {
+      SetCurrentDirection(Direction::kDown);
       snake_moved = false;
     } else
-      moveSnake();
+      MoveSnake();
   }
 }
 
-void SnakeModel::moveRight() {
-  if (snake_moved && CurrentDirectionIs(Direction::LEFT)) {
-    if (CurrentDirectionIs(Direction::RIGHT)) {
-      setCurrentDirection(Direction::RIGHT);
+void SnakeModel::MoveRight() {
+  if (snake_moved && CurrentDirectionIs(Direction::kLeft)) {
+    if (CurrentDirectionIs(Direction::kRight)) {
+      SetCurrentDirection(Direction::kRight);
       snake_moved = false;
     } else
-      moveSnake();
+      MoveSnake();
   }
 }
 
-void SnakeModel::moveLeft() {
-  if (snake_moved && CurrentDirectionIs(Direction::RIGHT)) {
-    if (CurrentDirectionIs(Direction::LEFT)) {
-      setCurrentDirection(Direction::LEFT);
+void SnakeModel::MoveLeft() {
+  if (snake_moved && CurrentDirectionIs(Direction::kRight)) {
+    if (CurrentDirectionIs(Direction::kLeft)) {
+      SetCurrentDirection(Direction::kLeft);
       snake_moved = false;
     } else
-      moveSnake();
+      MoveSnake();
   }
 }
 
 void SnakeModel::Start() {
   ResetGame();
-  setCurrentState(GameState::PLAYING);
+  setCurrentState(GameState::kPlaying);
 }
 
-void SnakeModel::Exit() { setCurrentState(GameState::EXIT); }
+void SnakeModel::Exit() { setCurrentState(GameState::kExit); }
 
 void SnakeModel::Pause() {
-  if (currentState != GameState::PAUSE) {
-    setCurrentState(GameState::PAUSE);
+  if (currentState != GameState::kPause) {
+    setCurrentState(GameState::kPause);
   } else {
-    setCurrentState(GameState::PLAYING);
+    setCurrentState(GameState::kPlaying);
   }
 }
 
-void SnakeModel::GameOver() { setCurrentState(GameState::GAMEOVER); }
+void SnakeModel::GameOver() { setCurrentState(GameState::kGameOver); }
 
 }  // namespace s21

@@ -1,5 +1,5 @@
-#ifndef DESKTOPVIEW_H
-#define DESKTOPVIEW_H
+#ifndef CPP3_BRICKGAME_2_0_1_SRC_GUI_DESKTOP_DESKTOP_VIEW_H_
+#define CPP3_BRICKGAME_2_0_1_SRC_GUI_DESKTOP_DESKTOP_VIEW_H_
 
 #include <QColor>
 #include <QFont>
@@ -23,21 +23,21 @@ class DesktopView : public QOpenGLWidget {
   void resizeGL(int, int) override;
   void paintGL() override;
   void keyPressEvent(QKeyEvent *) override;
-  void setClearColor(const QColor &color);
-  void setWindowTitle(const QString &title);
+  void SetClearColor(const QColor &color);
+  void SetWindowTitle(const QString &title);
 
  private:
   void MemoryAllocation();
   void MemoryDeallocation();
-  void updateGame();
-  void draw(const GameInfo_t &game);
-  void drawGame(const GameInfo_t &game);
+  void UpdateGame();
+  void Draw(const GameInfo_t &game);
+  void DrawGame(const GameInfo_t &game);
   void drawOuterFrame();
-  void drawSidebar(const GameInfo_t &game);
-  void drawNextFigure(const GameInfo_t &game);
-  void drawGameField(const GameInfo_t &game);
-  void drawGameStateScreen(const GameState &state, const GameInfo_t &game);
-  void drawGameOverText(const GameInfo_t &game, const QRect &textRect,
+  void DrawSidebar(const GameInfo_t &game);
+  void DrawNextFigure(const GameInfo_t &game);
+  void DrawGameField(const GameInfo_t &game);
+  void DrawGameStateScreen(const GameState &state, const GameInfo_t &game);
+  void DrawGameOverText(const GameInfo_t &game, const QRect &textRect,
                         const QTextOption &textOption);
   void InitColors();
   void SignalProcessing(QKeyEvent *);
@@ -47,18 +47,18 @@ class DesktopView : public QOpenGLWidget {
   void DrawMenu(const std::vector<std::string> &options, int &menu_option);
   void StartTheGame();
 
-  Controller controller;
-  int screenWidth, screenHeight, blockSize, borderOffset;
-  const int board_begin;
-  Signals signal;
-  MenuState state;
-  QTimer *gameTimer;
-  GameInfo_t currentGame;
-  QPainter painter;
-  GameState game_state;
-  QMap<int, QColor> colorMap;
+  Controller controller_;
+  int screen_width_, screen_height_, block_size_, border_offset_;
+  const int board_begin_;
+  Signals signal_;
+  MenuState menu_state_;
+  QTimer *game_timer_;
+  GameInfo_t current_game_;
+  QPainter painter_;
+  GameState game_state_;
+  QMap<int, QColor> color_map_;
 };
 
 }  // namespace s21
 
-#endif  // DESKTOPVIEW_H
+#endif  // CPP3_BRICKGAME_2_0_1_SRC_GUI_DESKTOP_DESKTOP_VIEW_H_

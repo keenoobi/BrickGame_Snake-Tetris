@@ -3,84 +3,84 @@
 namespace s21 {
 
 DesktopView::DesktopView()
-    : screenWidth(450),
-      screenHeight(580),
-      blockSize(28),
-      borderOffset(2),
-      board_begin(10),
-      signal(Signals::NONE),
-      state(MenuState::MENU),
-      gameTimer(new QTimer(this)),
-      painter(this),
-      game_state(GameState::START),
-      colorMap{} {
-  currentGame = {};
-  controller = {};
-  connect(gameTimer, &QTimer::timeout, this, &DesktopView::updateGame);
+    : screen_width_(450),
+      screen_height_(580),
+      block_size_(28),
+      border_offset_(2),
+      board_begin_(10),
+      signal_(Signals::kNone),
+      menu_state_(MenuState::kMenu),
+      game_timer_(new QTimer(this)),
+      painter_(this),
+      game_state_(GameState::kStart),
+      color_map_{} {
+  current_game_ = {};
+  controller_ = {};
+  connect(game_timer_, &QTimer::timeout, this, &DesktopView::UpdateGame);
   MemoryAllocation();
   InitColors();
-  setWindowTitle("BrickGames");
+  SetWindowTitle("BrickGames");
 }
 
 DesktopView::~DesktopView() { MemoryDeallocation(); }
 
 void DesktopView::InitColors() {
   // Создаем словарь для соответствия значений и цветов
-  colorMap[1] = Qt::cyan;
-  colorMap[2] = Qt::blue;
-  colorMap[3] = Qt::white;
-  colorMap[4] = Qt::yellow;
-  colorMap[5] = Qt::green;
-  colorMap[6] = Qt::magenta;
-  colorMap[7] = Qt::red;
+  color_map_[1] = Qt::cyan;
+  color_map_[2] = Qt::blue;
+  color_map_[3] = Qt::white;
+  color_map_[4] = Qt::yellow;
+  color_map_[5] = Qt::green;
+  color_map_[6] = Qt::magenta;
+  color_map_[7] = Qt::red;
 }
 
 void DesktopView::MemoryAllocation() {
-  currentGame.field = new int *[screenHeight]();
-  for (int i = 0; i < screenHeight; ++i) {
-    currentGame.field[i] = new int[screenWidth]();
+  current_game_.field = new int *[screen_height_]();
+  for (int i = 0; i < screen_height_; ++i) {
+    current_game_.field[i] = new int[screen_width_]();
   }
-  currentGame.next = new int *[4]();
+  current_game_.next = new int *[4]();
   for (int i = 0; i < 4; ++i) {
-    currentGame.next[i] = new int[4]();
+    current_game_.next[i] = new int[4]();
   }
 }
 
 void DesktopView::MemoryDeallocation() {
-  for (int i = 0; i < screenHeight; ++i) {
-    delete[] currentGame.field[i];
+  for (int i = 0; i < screen_height_; ++i) {
+    delete[] current_game_.field[i];
   }
-  delete[] currentGame.field;
+  delete[] current_game_.field;
   for (int i = 0; i < 4; ++i) {
-    delete[] currentGame.next[i];
+    delete[] current_game_.next[i];
   }
-  delete[] currentGame.next;
+  delete[] current_game_.next;
 }
 
-void DesktopView::setWindowTitle(const QString &title) {
+void DesktopView::SetWindowTitle(const QString &title) {
   QOpenGLWidget::setWindowTitle(title);
 }
 
 void DesktopView::initializeGL() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+  glOrtho(0, screen_width_, screen_height_, 0, -1, 1);
 }
 
 void DesktopView::resizeGL(int w, int h) {
   glLoadIdentity();
   glViewport(0, 0, w, h);
-  glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+  glOrtho(0, screen_width_, screen_height_, 0, -1, 1);
 }
 
 void DesktopView::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  setClearColor(Qt::black);
+  SetClearColor(Qt::black);
 
-  if (!painter.isActive()) painter.begin(this);  // Начало рисования
+  if (!painter_.isActive()) painter_.begin(this);  // Начало рисования
   MenuProcessing();
-  painter.end();  // Конец рисования
+  painter_.end();  // Конец рисования
 }
 
 void DesktopView::keyPressEvent(QKeyEvent *event) {
@@ -89,7 +89,7 @@ void DesktopView::keyPressEvent(QKeyEvent *event) {
   QOpenGLWidget::keyPressEvent(event);
 }
 
-void DesktopView::setClearColor(const QColor &color) {
+void DesktopView::SetClearColor(const QColor &color) {
   glClearColor(color.redF(),    // Красный компонент (0.0 - 1.0)
                color.greenF(),  // Зеленый компонент (0.0 - 1.0)
                color.blueF(),   // Синий компонент (0.0 - 1.0)
@@ -98,17 +98,17 @@ void DesktopView::setClearColor(const QColor &color) {
 }
 
 void DesktopView::MenuProcessing() {
-  switch (state) {
-    case MenuState::MENU:
+  switch (menu_state_) {
+    case MenuState::kMenu:
       InitMenu();
       break;
-    case MenuState::SNAKE_GAME:
+    case MenuState::kSnakeGame:
       StartTheGame();
       break;
-    case MenuState::TETRIS_GAME:
+    case MenuState::kTetrisGame:
       StartTheGame();
       break;
-    case MenuState::EXIT_MENU:
+    case MenuState::kExit_MENU:
       close();  // Закрываем окно при выборе "Exit"
       break;
     default:
@@ -121,14 +121,14 @@ void DesktopView::InitMenu() {
   bool enter = false;
   std::vector<std::string> options = {"Tetris", "Snake", "Exit"};
 
-  switch (signal) {
-    case Signals::UP:
+  switch (signal_) {
+    case Signals::kUp:
       if (menu_option > 0) menu_option--;
       break;
-    case Signals::DOWN:
+    case Signals::kDown:
       if (menu_option < (int)options.size() - 1) menu_option++;
       break;
-    case Signals::ENTER:
+    case Signals::kEnter:
       enter = true;
       ApplyChoice(menu_option);
       break;
@@ -142,29 +142,29 @@ void DesktopView::InitMenu() {
 void DesktopView::SignalProcessing(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Up:
-      signal = Signals::UP;
+      signal_ = Signals::kUp;
       break;
     case Qt::Key_Down:
-      signal = Signals::DOWN;
+      signal_ = Signals::kDown;
       break;
     case Qt::Key_Left:
-      signal = Signals::LEFT;
+      signal_ = Signals::kLeft;
       break;
     case Qt::Key_Right:
-      signal = Signals::RIGHT;
+      signal_ = Signals::kRight;
       break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
-      signal = Signals::ENTER;
+      signal_ = Signals::kEnter;
       break;
     case Qt::Key_P:
-      signal = Signals::PAUSE;
+      signal_ = Signals::kPause;
       break;
     case Qt::Key_Escape:
-      signal = Signals::ESC;
+      signal_ = Signals::kEsc;
       break;
     default:
-      signal = Signals::NONE;
+      signal_ = Signals::kNone;
       break;
   }
 }
@@ -172,23 +172,23 @@ void DesktopView::SignalProcessing(QKeyEvent *event) {
 void DesktopView::ApplyChoice(int &choice) {
   switch (choice) {
     case 0:
-      state = MenuState::TETRIS_GAME;
-      controller.setGame(state);
-      setWindowTitle("Tetris");
+      menu_state_ = MenuState::kTetrisGame;
+      controller_.SetGame(menu_state_);
+      SetWindowTitle("Tetris");
       break;
     case 1:
-      state = MenuState::SNAKE_GAME;
-      controller.setGame(state);
-      setWindowTitle("Snake");
+      menu_state_ = MenuState::kSnakeGame;
+      controller_.SetGame(menu_state_);
+      SetWindowTitle("Snake");
       break;
     case 2:
-      state = MenuState::EXIT_MENU;
+      menu_state_ = MenuState::kExit_MENU;
       break;
     default:
       break;
   }
 
-  signal = Signals::NONE;
+  signal_ = Signals::kNone;
   update();
 }
 
@@ -202,41 +202,41 @@ void DesktopView::DrawMenu(const std::vector<std::string> &options,
   const int dy = fontMetricsSelected.height();
   const int end = options.size();
   const int totalHeight = dy * end;
-  const int y = (screenHeight - totalHeight) / 2;
+  const int y = (screen_height_ - totalHeight) / 2;
 
   for (int i = 0; i < end; ++i) {
     const QString text = QString::fromStdString(options[i]);
     const int textWidth = (i == menuOption)
                               ? fontMetricsSelected.horizontalAdvance(text)
                               : fontMetrics.horizontalAdvance(text);
-    const int x = (screenWidth - textWidth) / 2;
+    const int x = (screen_width_ - textWidth) / 2;
 
     if (i == menuOption) {
-      painter.setFont(fontSelected);
-      painter.setPen(Qt::red);
+      painter_.setFont(fontSelected);
+      painter_.setPen(Qt::red);
     } else {
-      painter.setFont(font);
-      painter.setPen(Qt::white);
+      painter_.setFont(font);
+      painter_.setPen(Qt::white);
     }
 
-    painter.drawText(x, y + i * dy, text);
+    painter_.drawText(x, y + i * dy, text);
   }
 }
 
-void DesktopView::draw(const GameInfo_t &game) {
-  game_state = controller.GetCurrentGameState();
-  if (game_state == GameState::PLAYING)
-    drawGame(game);
+void DesktopView::Draw(const GameInfo_t &game) {
+  game_state_ = controller_.GetCurrentGameState();
+  if (game_state_ == GameState::kPlaying)
+    DrawGame(game);
   else
-    drawGameStateScreen(game_state, game);
+    DrawGameStateScreen(game_state_, game);
 }
 
-void DesktopView::drawGameStateScreen(const GameState &state,
+void DesktopView::DrawGameStateScreen(const GameState &state,
                                       const GameInfo_t &game) {
-  if (!painter.isActive()) painter.begin(this);
+  if (!painter_.isActive()) painter_.begin(this);
   static const QFont font("Arial", 25);
-  static const QRect textRect(board_begin, board_begin, screenWidth - 20,
-                              screenHeight - 20);
+  static const QRect textRect(board_begin_, board_begin, screen_width_ - 20,
+                              screen_height_ - 20);
   static QTextOption textOption;
   static std::once_flag initFlag;
   std::call_once(initFlag, []() {
@@ -245,18 +245,18 @@ void DesktopView::drawGameStateScreen(const GameState &state,
     textOption.setTabStopDistance(40);  // Увеличиваем расстояние между строками
   });
 
-  painter.setPen(Qt::white);
-  painter.setFont(font);
+  painter_.setPen(Qt::white);
+  painter_.setFont(font);
 
   QString text;
   switch (state) {
-    case GameState::START:
+    case GameState::kStart:
       text = "Press Enter to start";
       break;
-    case GameState::PAUSE:
+    case GameState::kPause:
       text = "Game is paused\n\nPress P to resume";
       break;
-    case GameState::GAMEOVER:
+    case GameState::kGameOver:
       text =
           QString("Game Over!\nScore: %1  Level: %2\n\nPress Enter to restart")
               .arg(game.score)
@@ -266,116 +266,118 @@ void DesktopView::drawGameStateScreen(const GameState &state,
       return;
   }
 
-  painter.drawText(textRect, text, textOption);
+  painter_.drawText(textRect, text, textOption);
 }
 
 void DesktopView::StartTheGame() {
-  updateGame();  // Обновление игры
-  gameTimer->start(10);  // 10 миллисекунд между обновлениями
+  UpdateGame();  // Обновление игры
+  game_timer_->start(10);  // 10 миллисекунд между обновлениями
 }
 
-void DesktopView::updateGame() {
-  game_state = controller.GetCurrentGameState();
-  if (game_state != GameState::EXIT) {
-    controller.GameProcessing(signal);
-    controller.getData(currentGame);
-    draw(currentGame);  // Отрисовка игры
-    update();           // Перерисовка виджета
-    signal = Signals::NONE;
+void DesktopView::UpdateGame() {
+  game_state_ = controller_.GetCurrentGameState();
+  if (game_state_ != GameState::kExit) {
+    controller_.GameProcessing(signal_);
+    controller_.getData(current_game_);
+    Draw(current_game_);  // Отрисовка игры
+    update();             // Перерисовка виджета
+    signal_ = Signals::kNone;
   } else {
-    state = MenuState::MENU;
-    setWindowTitle("BrickGames");
-    gameTimer->stop();
+    menu_state_ = MenuState::kMenu;
+    SetWindowTitle("BrickGames");
+    game_timer_->stop();
     update();
   }
 }
 
-void DesktopView::drawGameField(const GameInfo_t &game) {
+void DesktopView::DrawGameField(const GameInfo_t &game) {
   QPen blackPen(Qt::black);
   blackPen.setWidth(4);
-  painter.setPen(blackPen);
+  painter_.setPen(blackPen);
 
   for (int i = 0, value = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
       value = game.field[i][j];
-      if (colorMap.contains(value)) {
+      if (color_map_.contains(value)) {
         QColor color = colorMap[value];
-        painter.drawRect(board_begin + j * blockSize + borderOffset,
-                         board_begin + i * blockSize + borderOffset,
-                         blockSize - 2 * borderOffset,
-                         blockSize - 2 * borderOffset);
-        painter.fillRect(board_begin + j * blockSize + borderOffset,
-                         board_begin + i * blockSize + borderOffset,
-                         blockSize - 2 * borderOffset,
-                         blockSize - 2 * borderOffset, color);
+        painter_.drawRect(board_begin_ + j * block_size_ + border_offset_,
+                          board_begin_ + i * block_size_ + border_offset_,
+                          block_size_ - 2 * border_offset_,
+                          block_size_ - 2 * border_offset_);
+        painter_.fillRect(board_begin_ + j * block_size_ + border_offset_,
+                          board_begin_ + i * block_size_ + border_offset_,
+                          block_size_ - 2 * border_offset_,
+                          block_size_ - 2 * border_offset_, color);
       }
     }
   }
 }
 
-void DesktopView::drawNextFigure(const GameInfo_t &game) {
-  painter.setPen(Qt::black);
+void DesktopView::DrawNextFigure(const GameInfo_t &game) {
+  painter_.setPen(Qt::black);
   for (int i = 0, value = 0; i < TETROMINO_SIZE; i++) {
     for (int j = 0; j < TETROMINO_SIZE; j++) {
       value = game.next[i][j];
-      if (colorMap.contains(value)) {
+      if (color_map_.contains(value)) {
         QColor color = colorMap[value];
-        painter.drawRect(320 + j * blockSize + borderOffset,
-                         220 + i * blockSize + borderOffset,
-                         blockSize - 2 * borderOffset,
-                         blockSize - 2 * borderOffset);
-        painter.fillRect(320 + j * blockSize + borderOffset,
-                         220 + i * blockSize + borderOffset,
-                         blockSize - 2 * borderOffset,
-                         blockSize - 2 * borderOffset, color);
+        painter_.drawRect(320 + j * block_size_ + border_offset_,
+                          220 + i * block_size_ + border_offset_,
+                          block_size_ - 2 * border_offset_,
+                          block_size_ - 2 * border_offset_);
+        painter_.fillRect(320 + j * block_size_ + border_offset_,
+                          220 + i * block_size_ + border_offset_,
+                          block_size_ - 2 * border_offset_,
+                          block_size_ - 2 * border_offset_, color);
       }
     }
   }
 }
 
-void DesktopView::drawSidebar(const GameInfo_t &game) {
+void DesktopView::DrawSidebar(const GameInfo_t &game) {
   QFont font("Arial", 20);
-  painter.setFont(font);
-  painter.setPen(Qt::white);
-  painter.drawText(310 - borderOffset, 60 - borderOffset,
-                   QString("Score: %1").arg(game.score));
-  painter.drawText(310 - borderOffset, 100 - borderOffset,
-                   QString("Level: %1").arg(game.level));
-  painter.drawText(310 - borderOffset, 140 - borderOffset,
-                   QString("Record: %1").arg(game.high_score));
-  if (state == MenuState::SNAKE_GAME)
-    painter.drawText(310 - borderOffset, 180 - borderOffset,
-                     QString("Speed: %1").arg(game.speed));
+  painter_.setFont(font);
+  painter_.setPen(Qt::white);
+  painter_.drawText(310 - border_offset_, 60 - border_offset_,
+                    QString("Score: %1").arg(game.score));
+  painter_.drawText(310 - border_offset_, 100 - border_offset_,
+                    QString("Level: %1").arg(game.level));
+  painter_.drawText(310 - border_offset_, 140 - border_offset_,
+                    QString("Record: %1").arg(game.high_score));
+  if (menu_state_ == MenuState::kSnakeGame)
+    painter_.drawText(310 - border_offset_, 180 - border_offset_,
+                      QString("Speed: %1").arg(game.speed));
 
-  if (state == MenuState::TETRIS_GAME) {
-    drawNextFigure(game);
+  if (menu_state_ == MenuState::kTetrisGame) {
+    DrawNextFigure(game);
   }
 }
 
 void DesktopView::drawOuterFrame() {
   QPen whitePen(Qt::white);
   whitePen.setWidth(4);
-  painter.setPen(whitePen);
+  painter_.setPen(whitePen);
 
-  painter.drawRect(board_begin - borderOffset, board_begin - borderOffset,
-                   blockSize * 10 + 2 * borderOffset,
-                   blockSize * 20 + 2 * borderOffset);
-  painter.drawRect(board_begin * 30 - borderOffset, board_begin - borderOffset,
-                   blockSize * 5 + 2 * borderOffset,
-                   blockSize * 20 + 2 * borderOffset);
+  painter_.drawRect(board_begin_ - border_offset_,
+                    board_begin_ - border_offset_,
+                    block_size_ * 10 + 2 * border_offset_,
+                    block_size_ * 20 + 2 * border_offset_);
+  painter_.drawRect(board_begin_ * 30 - border_offset_,
+                    board_begin_ - border_offset_,
+                    block_size_ * 5 + 2 * border_offset_,
+                    block_size_ * 20 + 2 * border_offset_);
 }
 
-void DesktopView::drawGame(const GameInfo_t &game) {
-  if (!painter.isActive()) painter.begin(this);
+void DesktopView::DrawGame(const GameInfo_t &game) {
+  if (!painter_.isActive()) painter_.begin(this);
 
   // Draw outer frame
   drawOuterFrame();
 
   // Draw game field
-  drawGameField(game);
+  DrawGameField(game);
 
   // Draw sidebar
-  drawSidebar(game);
+  DrawSidebar(game);
 }
 
 }  // namespace s21

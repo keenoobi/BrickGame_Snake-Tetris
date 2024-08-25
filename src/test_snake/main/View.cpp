@@ -3,13 +3,13 @@
 namespace s21 {
 
 View::View(int width, int height)
-    : width(width),
-      height(height),
-      signal(Signals::NONE),
-      state(MenuState::MENU),
-      key(0) {
-  game = {};
-  controller = {};
+    : width_(width),
+      height_(height),
+      signal_(Signals::kNone),
+      menu_state_(MenuState::kMenu),
+      key_(0) {
+  game_ = {};
+  controller_ = {};
   NcursesInit();
   WindowsInit();
   InitColors();
@@ -27,12 +27,12 @@ void View::NcursesInit() {
 }
 
 void View::WindowsInit() {
-  menuWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
-  gameWin = newwin(height + 2, width + 2, 2, 2);
-  sideBarWin = newwin(height + 2, width - 5, 2, width + 4);
-  startWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
-  pauseWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
-  gameOverWin = newwin(height + 2, height + 2 + width - 5, 2, 2);
+  menu_win_ = newwin(height_ + 2, height_ + 2 + width_ - 5, 2, 2);
+  game_win_ = newwin(height_ + 2, width_ + 2, 2, 2);
+  sidebar_win_ = newwin(height_ + 2, width_ - 5, 2, width_ + 4);
+  start_win_ = newwin(height_ + 2, height_ + 2 + width_ - 5, 2, 2);
+  pause_win_ = newwin(height_ + 2, height_ + 2 + width_ - 5, 2, 2);
+  game_over_win_ = newwin(height_ + 2, height_ + 2 + width_ - 5, 2, 2);
 }
 
 void View::InitColors(void) {
@@ -48,51 +48,51 @@ void View::InitColors(void) {
 }
 
 void View::MemoryAllocation() {
-  game.field = new int *[height]();
-  for (int i = 0; i < height; ++i) {
-    game.field[i] = new int[width]();
+  game_.field = new int *[height_]();
+  for (int i = 0; i < height_; ++i) {
+    game_.field[i] = new int[width_]();
   }
-  game.next = new int *[4]();
+  game_.next = new int *[4]();
   for (int i = 0; i < 4; ++i) {
-    game.next[i] = new int[4]();
+    game_.next[i] = new int[4]();
   }
 }
 
 void View::MemoryDeallocation() {
-  for (int i = 0; i < height; ++i) {
-    delete[] game.field[i];
+  for (int i = 0; i < height_; ++i) {
+    delete[] game_.field[i];
   }
-  delete[] game.field;
+  delete[] game_.field;
   for (int i = 0; i < 4; ++i) {
-    delete[] game.next[i];
+    delete[] game_.next[i];
   }
-  delete[] game.next;
+  delete[] game_.next;
 }
 
 View::~View() {
-  delwin(startWin);
-  delwin(menuWin);
-  delwin(pauseWin);
-  delwin(gameOverWin);
-  delwin(gameWin);
-  delwin(sideBarWin);
+  delwin(start_win_);
+  delwin(menu_win_);
+  delwin(pause_win_);
+  delwin(game_over_win_);
+  delwin(game_win_);
+  delwin(sidebar_win_);
   MemoryDeallocation();
 }
 
 void View::MenuProcessing() {
-  while (state != MenuState::EXIT_MENU) {
+  while (menu_state_ != MenuState::kExit_MENU) {
     SignalProcessing();
-    switch (state) {
-      case MenuState::MENU:
+    switch (menu_state_) {
+      case MenuState::kMenu:
         InitMenu();
         break;
-      case MenuState::SNAKE_GAME:
+      case MenuState::kSnakeGame:
         StartTheGame();
         break;
-      case MenuState::TETRIS_GAME:
+      case MenuState::kTetrisGame:
         StartTheGame();
         break;
-      case MenuState::EXIT_MENU:
+      case MenuState::kExit_MENU:
         // InitExit();
         break;
       default:
@@ -102,15 +102,15 @@ void View::MenuProcessing() {
 }
 
 void View::StartTheGame() {
-  if (controller.GetCurrentGameState() != GameState::EXIT) {
-    controller.GameProcessing(signal);
-    controller.getData(game);
-    draw(game);
+  if (controller_.GetCurrentGameState() != GameState::kExit) {
+    controller_.GameProcessing(signal_);
+    controller_.getData(game_);
+    Draw(game_);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   } else {
-    wclear(gameWin);
-    wclear(sideBarWin);
-    state = MenuState::MENU;
+    wclear(game_win_);
+    wclear(sidebar_win_);
+    menu_state_ = MenuState::kMenu;
   }
 }
 
@@ -119,14 +119,14 @@ void View::InitMenu() {
   bool enter = false;
   std::vector<std::string> options = {"Tetris", "Snake", "Exit"};
 
-  switch (signal) {
-    case Signals::UP:
+  switch (signal_) {
+    case Signals::kUp:
       if (menu_option > 0) menu_option--;
       break;
-    case Signals::DOWN:
+    case Signals::kDown:
       if (menu_option < 2) menu_option++;
       break;
-    case Signals::ENTER:
+    case Signals::kEnter:
       enter = true;
       ApplyChoice(menu_option);
       break;
@@ -140,15 +140,15 @@ void View::InitMenu() {
 void View::ApplyChoice(int &choice) {
   switch (choice) {
     case 0:
-      state = MenuState::TETRIS_GAME;
-      controller.setGame(state);
+      menu_state_ = MenuState::kTetrisGame;
+      controller_.SetGame(menu_state_);
       break;
     case 1:
-      state = MenuState::SNAKE_GAME;
-      controller.setGame(state);
+      menu_state_ = MenuState::kSnakeGame;
+      controller_.SetGame(menu_state_);
       break;
     case 2:
-      state = MenuState::EXIT_MENU;
+      menu_state_ = MenuState::kExit_MENU;
       break;
     default:
       break;
@@ -156,131 +156,132 @@ void View::ApplyChoice(int &choice) {
 }
 
 void View::DrawMenu(const std::vector<std::string> &options, int &menu_option) {
-  box(menuWin, 0, 0);
+  box(menu_win_, 0, 0);
   for (int i = 0; i < 3; i++) {
-    mvwprintw(menuWin, i + 1, 2, "%s", options[i].c_str());
+    mvwprintw(menu_win_, i + 1, 2, "%s", options[i].c_str());
     if (i == menu_option) {
-      wattron(menuWin, A_REVERSE);
-      mvwprintw(menuWin, i + 1, 2, "%s", options[i].c_str());
-      wattroff(menuWin, A_REVERSE);
+      wattron(menu_win_, A_REVERSE);
+      mvwprintw(menu_win_, i + 1, 2, "%s", options[i].c_str());
+      wattroff(menu_win_, A_REVERSE);
     }
   }
-  wrefresh(menuWin);
+  wrefresh(menu_win_);
 }
 
 void View::SignalProcessing() {
-  key = getch();
-  switch (key) {
+  key_ = getch();
+  switch (key_) {
     case KEY_UP:
-      signal = Signals::UP;
+      signal_ = Signals::kUp;
       break;
     case KEY_DOWN:
-      signal = Signals::DOWN;
+      signal_ = Signals::kDown;
       break;
     case KEY_LEFT:
-      signal = Signals::LEFT;
+      signal_ = Signals::kLeft;
       break;
     case KEY_RIGHT:
-      signal = Signals::RIGHT;
+      signal_ = Signals::kRight;
       break;
     case ENTER_KEY:
-      signal = Signals::ENTER;
+      signal_ = Signals::kEnter;
       break;
     case 'p':
-      signal = Signals::PAUSE;
+      signal_ = Signals::kPause;
       break;
     case ESC_KEY:
-      signal = Signals::ESC;
+      signal_ = Signals::kEsc;
       break;
     default:
-      signal = Signals::NONE;
+      signal_ = Signals::kNone;
       break;
   }
 }
 
-void View::drawStartScreen(const GameState &state) {
-  if (state == GameState::START) {
-    box(startWin, 0, 0);
-    mvwprintw(startWin, 10, 8, "Press Enter to start");
-    wrefresh(startWin);
+void View::DrawStartScreen(const GameState &state) {
+  if (state == GameState::kStart) {
+    box(start_win_, 0, 0);
+    mvwprintw(start_win_, 10, 8, "Press Enter to start");
+    wrefresh(start_win_);
   }
 }
 
-void View::drawPauseScreen(const GameState &state) {
-  if (state == GameState::PAUSE) {
-    box(pauseWin, 0, 0);
-    mvwprintw(pauseWin, 10, 5, "Game is paused");
-    mvwprintw(pauseWin, 10 + 2, 5, "Press P to resume");
-    wrefresh(pauseWin);
+void View::DrawPauseScreen(const GameState &state) {
+  if (state == GameState::kPause) {
+    box(pause_win_, 0, 0);
+    mvwprintw(pause_win_, 10, 5, "Game is paused");
+    mvwprintw(pause_win_, 10 + 2, 5, "Press P to resume");
+    wrefresh(pause_win_);
   }
 }
 
-void View::drawGame(const GameInfo_t &game) {
-  box(gameWin, 0, 0);     // Draw a border around the window
-  box(sideBarWin, 0, 0);  // Draw a border around the window
+void View::DrawGame(const GameInfo_t &game) {
+  box(game_win_, 0, 0);     // Draw a border around the window
+  box(sidebar_win_, 0, 0);  // Draw a border around the window
 
   for (int i = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
       if (game.field[i][j]) {
-        ADD_BLOCK(gameWin, i, j, game.field[i][j]);
+        ADD_BLOCK(game_win_, i, j, game.field[i][j]);
       } else {
-        ADD_EMPTY(gameWin, i, j);
+        ADD_EMPTY(game_win_, i, j);
       }
     }
   }
 
-  mvwprintw(sideBarWin, 2, 2, "Score: %d", game.score);
-  mvwprintw(sideBarWin, 4, 2, "Level: %d", game.level);
-  mvwprintw(sideBarWin, 6, 2, "Speed: %d", game.speed);
-  displayNextFigure(game);
-  wrefresh(gameWin);
-  wrefresh(sideBarWin);
+  mvwprintw(sidebar_win_, 2, 2, "Score: %d", game.score);
+  mvwprintw(sidebar_win_, 4, 2, "Level: %d", game.level);
+  mvwprintw(sidebar_win_, 6, 2, "Speed: %d", game.speed);
+  DisplayNextFigure(game);
+  wrefresh(game_win_);
+  wrefresh(sidebar_win_);
 }
 
-void View::displayNextFigure(const GameInfo_t &game) {
-  if (state != MenuState::TETRIS_GAME) return;
+void View::DisplayNextFigure(const GameInfo_t &game) {
+  if (menu_state_ != MenuState::kTetrisGame) return;
 
-  box(sideBarWin, 0, 0);
+  box(sidebar_win_, 0, 0);
 
   for (int i = 0; i < TETROMINO_SIZE; i++) {
     for (int j = 0; j < TETROMINO_SIZE; j++) {
       if (game.next[i][j]) {
-        ADD_BLOCK(sideBarWin, i + 11, j + 1, game.next[i][j]);
+        ADD_BLOCK(sidebar_win_, i + 11, j + 1, game.next[i][j]);
       } else {
-        ADD_EMPTY(sideBarWin, i + 11, j + 1);
+        ADD_EMPTY(sidebar_win_, i + 11, j + 1);
       }
     }
   }
 }
 
-void View::draw(const GameInfo_t &game) {
-  GameState state = controller.GetCurrentGameState();
+void View::Draw(const GameInfo_t &game) {
+  GameState state = controller_.GetCurrentGameState();
   switch (state) {
-    case GameState::START:
-      drawStartScreen(state);
+    case GameState::kStart:
+      DrawStartScreen(state);
       break;
-    case GameState::PLAYING:
-      drawGame(game);
+    case GameState::kPlaying:
+      DrawGame(game);
       break;
-    case GameState::PAUSE:
-      drawPauseScreen(state);
+    case GameState::kPause:
+      DrawPauseScreen(state);
       break;
-    case GameState::GAMEOVER:
-      drawGameOver(game);
+    case GameState::kGameOver:
+      DrawGameOver(game);
       break;
     default:
       break;
   }
 }
 
-void View::drawGameOver(const GameInfo_t &game) {
-  wclear(gameWin);
-  wclear(sideBarWin);
-  box(gameOverWin, 0, 0);
-  mvwprintw(gameOverWin, 8, 12, "Game Over!");
-  mvwprintw(gameOverWin, 10, 8, "Score: %d  Level: %d", game.score, game.level);
-  mvwprintw(gameOverWin, 12, 5, "Start over? (Press Enter)");
-  wrefresh(gameOverWin);
+void View::DrawGameOver(const GameInfo_t &game) {
+  wclear(game_win_);
+  wclear(sidebar_win_);
+  box(game_over_win_, 0, 0);
+  mvwprintw(game_over_win_, 8, 12, "Game Over!");
+  mvwprintw(game_over_win_, 10, 8, "Score: %d  Level: %d", game.score,
+            game.level);
+  mvwprintw(game_over_win_, 12, 5, "Start over? (Press Enter)");
+  wrefresh(game_over_win_);
 }
 
 }  // namespace s21

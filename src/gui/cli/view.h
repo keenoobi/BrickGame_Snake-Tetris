@@ -1,5 +1,5 @@
-#ifndef VIEW_HPP
-#define VIEW_HPP
+#ifndef CPP3_BRICKGAME_2_0_1_SRC_GUI_CLI_VIEW_H_
+#define CPP3_BRICKGAME_2_0_1_SRC_GUI_CLI_VIEW_H_
 
 #include <ncurses.h>
 
@@ -24,12 +24,12 @@ class View {
   void InitColors();
   void MemoryAllocation();
   void MemoryDeallocation();
-  void draw(const GameInfo_t &game);
-  void drawGame(const GameInfo_t &game);
-  void displayNextFigure(const GameInfo_t &game);
-  void drawStartScreen(const GameState &state);
-  void drawPauseScreen(const GameState &state);
-  void drawGameOver(const GameInfo_t &game);
+  void Draw(const GameInfo_t &game);
+  void DrawGame(const GameInfo_t &game);
+  void DisplayNextFigure(const GameInfo_t &game);
+  void DrawStartScreen(const GameState &state);
+  void DrawPauseScreen(const GameState &state);
+  void DrawGameOver(const GameInfo_t &game);
   void SignalProcessing();
   void InitMenu();
   void ApplyChoice(int &choice);
@@ -37,18 +37,18 @@ class View {
   void StartTheGame();
 
  private:
-  Controller controller;
-  int width, height;
-  Signals signal;
-  MenuState state;
-  int key;
-  GameInfo_t game;
-  WINDOW *menuWin;
-  WINDOW *startWin;
-  WINDOW *pauseWin;
-  WINDOW *gameOverWin;
-  WINDOW *gameWin;
-  WINDOW *sideBarWin;
+  Controller controller_;
+  int width_, height_;
+  Signals signal_;
+  MenuState menu_state_;
+  int key_;
+  GameInfo_t game_;
+  WINDOW *menu_win_;
+  WINDOW *start_win_;
+  WINDOW *pause_win_;
+  WINDOW *game_over_win_;
+  WINDOW *game_win_;
+  WINDOW *sidebar_win_;
 };
 }  // namespace s21
-#endif  // VIEW_HPP
+#endif  // CPP3_BRICKGAME_2_0_1_SRC_GUI_CLI_VIEW_H_

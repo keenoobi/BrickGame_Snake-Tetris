@@ -10,8 +10,8 @@ class TetrisModel : public BrickGame {
   TetrisModel();
   void ResetGame();
   void GetData(GameInfo_t &game) const override;
-  GameState getCurrentState() const override;
-  void handleEvent(Signals) override;
+  GameState GetCurrentState() const override;
+  void HandleEvent(Signals) override;
   void RecalibrateSignal(Signals);
 
  private:

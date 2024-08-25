@@ -8,12 +8,12 @@
 #include "TetrisModel.hpp"
 
 namespace s21 {
-enum class MenuState { MENU, SNAKE_GAME, TETRIS_GAME, EXIT_MENU };
+enum class MenuState { kMenu, kSnakeGame, kTetrisGame, kExitMenu };
 
 class Controller {
  public:
   Controller();
-  void setGame(MenuState state);
+  void SetGame(MenuState state);
   void getData(GameInfo_t& game);
   GameState GetCurrentGameState();
   std::unique_ptr<BrickGame>& GetModel();

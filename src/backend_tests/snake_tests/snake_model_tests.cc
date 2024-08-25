@@ -4,95 +4,95 @@ namespace s21 {
 TEST(SnakeModelTests, Test1) {
   SnakeModel model;
   model.ResetGame();
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  EXPECT_EQ(model.getSnake().size(), 4);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  EXPECT_EQ(model.GetSnake().size(), 4);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
 }
 
 TEST(SnakeModelTests, Test2) {
   SnakeModel model;
-  model.setCurrentState(GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
+  model.setCurrentState(GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
   model.ResetGame();
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
 }
 
 TEST(SnakeModelTests, Test3) {
   SnakeModel model;
-  model.setCurrentDirection(Direction::RIGHT);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::RIGHT);
-  model.setCurrentDirection(Direction::LEFT);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  model.SetCurrentDirection(Direction::kRight);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kRight);
+  model.SetCurrentDirection(Direction::kLeft);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
 }
 
 TEST(SnakeModelTests, Test4) {
   SnakeModel model;
   model.ResetGame();
-  EXPECT_GE(model.getFood().x, 0);
-  EXPECT_LE(model.getFood().y, 20);
+  EXPECT_GE(model.GetFood().x, 0);
+  EXPECT_LE(model.GetFood().y, 20);
 }
 
 TEST(SnakeModelTests, Test5) {
   SnakeModel model;
   model.ResetGame();
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
 
-  EXPECT_TRUE(model.CurrentDirectionIs(Direction::LEFT));
-  EXPECT_FALSE(model.CurrentDirectionIs(Direction::RIGHT));
-  model.setCurrentDirection(Direction::RIGHT);
-  EXPECT_TRUE(model.CurrentDirectionIs(Direction::RIGHT));
-  EXPECT_FALSE(model.CurrentDirectionIs(Direction::LEFT));
+  EXPECT_TRUE(model.CurrentDirectionIs(Direction::kLeft));
+  EXPECT_FALSE(model.CurrentDirectionIs(Direction::kRight));
+  model.SetCurrentDirection(Direction::kRight);
+  EXPECT_TRUE(model.CurrentDirectionIs(Direction::kRight));
+  EXPECT_FALSE(model.CurrentDirectionIs(Direction::kLeft));
 }
 
 TEST(SnakeModelTests, Test6) {
   SnakeModel model;
   model.ResetGame();
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.setCurrentState(GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.setCurrentState(GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
 }
 
 TEST(SnakeModelTests, Test7) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
 }
 
 TEST(SnakeModelTests, Test7_1) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ESC;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::EXIT);
+  Signals signal = Signals::kEsc;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kExit);
 }
 
 TEST(SnakeModelTests, Test7_2) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
-  model.handleEvent(signal = Signals::PAUSE);
-  EXPECT_EQ(model.getCurrentState(), GameState::PAUSE);
-  model.handleEvent(signal = Signals::PAUSE);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
+  model.HandleEvent(signal = Signals::kPause);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPause);
+  model.HandleEvent(signal = Signals::kPause);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
 }
 
 TEST(SnakeModelTests, Test7_3) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.WriteSnakeRecord();
   model.LoadSnakeRecord();
 }
@@ -100,111 +100,111 @@ TEST(SnakeModelTests, Test7_3) {
 TEST(SnakeModelTests, Test8) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
 }
 
 TEST(SnakeModelTests, Test9) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::RIGHT);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::RIGHT);
+  model.HandleEvent(signal = Signals::kRight);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kRight);
 }
 
 TEST(SnakeModelTests, Test10) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::LEFT);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  model.HandleEvent(signal = Signals::kLeft);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
 }
 
 TEST(SnakeModelTests, Test11) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::DOWN);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::DOWN);
+  model.HandleEvent(signal = Signals::kDown);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kDown);
 }
 
 TEST(SnakeModelTests, Test12) {
   SnakeModel model;
   model.ResetGame();
-  int x = model.getSnake().front().x;
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  int x = model.GetSnake().front().x;
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::LEFT);
+  model.HandleEvent(signal = Signals::kLeft);
   model.setSnakeMoved(true);
-  EXPECT_EQ(model.getSnake().front().x, x - 1);
+  EXPECT_EQ(model.GetSnake().front().x, x - 1);
 }
 
 TEST(SnakeModelTests, Test13) {
   SnakeModel model;
   model.ResetGame();
-  int x = model.getSnake().front().x;
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  int x = model.GetSnake().front().x;
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::NONE);
+  model.HandleEvent(signal = Signals::kNone);
   std::this_thread::sleep_for(std::chrono::milliseconds(310));
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::NONE);
-  EXPECT_EQ(model.getSnake().front().x, x - 1);
+  model.HandleEvent(signal = Signals::kNone);
+  EXPECT_EQ(model.GetSnake().front().x, x - 1);
 }
 
 TEST(SnakeModelTests, Test14) {
   SnakeModel model;
   GameInfo_t info = {};
   model.ResetGame();
-  int y = model.getSnake().front().y;
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  int y = model.GetSnake().front().y;
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
-  EXPECT_EQ(model.getSnake().front().y, y - 1);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
+  EXPECT_EQ(model.GetSnake().front().y, y - 1);
   info.field = new int *[20]();
   for (int i = 0; i < 20; ++i) {
     info.field[i] = new int[10]();
@@ -223,81 +223,81 @@ TEST(SnakeModelTests, Test14) {
 TEST(SnakeModelTests, Test15) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   for (int i = 0; i < 5; i++) {
     model.setSnakeMoved(true);
-    model.handleEvent(signal = Signals::LEFT);
+    model.HandleEvent(signal = Signals::kLeft);
   }
-  EXPECT_EQ(model.getCurrentState(), GameState::GAMEOVER);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kGameOver);
 }
 
 TEST(SnakeModelTests, Test16) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   for (int i = 0; i < 12; i++) {
     model.setSnakeMoved(true);
-    model.handleEvent(signal = Signals::DOWN);
+    model.HandleEvent(signal = Signals::kDown);
   }
-  EXPECT_EQ(model.getCurrentState(), GameState::GAMEOVER);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kGameOver);
 }
 
 TEST(SnakeModelTests, Test17) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
   for (int i = 0; i < 6; i++) {
     model.setSnakeMoved(true);
-    model.handleEvent(signal = Signals::RIGHT);
+    model.HandleEvent(signal = Signals::kRight);
   }
-  EXPECT_EQ(model.getCurrentState(), GameState::GAMEOVER);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kGameOver);
 }
 
 TEST(SnakeModelTests, Test18) {
   SnakeModel model;
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::UP);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::UP);
+  model.HandleEvent(signal = Signals::kUp);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kUp);
   for (int i = 0; i < 6; i++) {
     model.setSnakeMoved(true);
-    model.handleEvent(signal = Signals::RIGHT);
+    model.HandleEvent(signal = Signals::kRight);
   }
-  EXPECT_EQ(model.getCurrentState(), GameState::GAMEOVER);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kGameOver);
 }
 
 TEST(SnakeModelTests, Test19) {
   SnakeModel model;
   GameInfo_t info = {};
   model.ResetGame();
-  Signals signal = Signals::ENTER;
-  EXPECT_EQ(model.getCurrentState(), GameState::START);
-  model.handleEvent(signal);
-  EXPECT_EQ(model.getCurrentState(), GameState::PLAYING);
-  EXPECT_EQ(model.getCurrentDirection(), Direction::LEFT);
-  model.setFood(model.getSnake().front().x - 1, model.getSnake().front().y);
+  Signals signal = Signals::kEnter;
+  EXPECT_EQ(model.GetCurrentState(), GameState::kStart);
+  model.HandleEvent(signal);
+  EXPECT_EQ(model.GetCurrentState(), GameState::kPlaying);
+  EXPECT_EQ(model.GetCurrentDirection(), Direction::kLeft);
+  model.setFood(model.GetSnake().front().x - 1, model.GetSnake().front().y);
   model.setSnakeMoved(true);
-  model.handleEvent(signal = Signals::LEFT);
+  model.HandleEvent(signal = Signals::kLeft);
   info.field = new int *[20]();
   for (int i = 0; i < 20; ++i) {
     info.field[i] = new int[10]();

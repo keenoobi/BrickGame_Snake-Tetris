@@ -27,57 +27,57 @@ class SnakeModel : public BrickGame {
   void GetData(GameInfo_t& game) const override;
 
   const std::vector<Point>& getSnake() const;
-  const Point& getFood() const;
-  Direction getCurrentDirection() const;
+  const Point& GetFood() const;
+  Direction GetCurrentDirection() const;
   bool CurrentDirectionIs(Direction) const;
-  void setCurrentDirection(Direction);
+  void SetCurrentDirection(Direction);
 
-  GameState getCurrentState() const override;
+  GameState GetCurrentState() const override;
   void setCurrentState(GameState);
 
  private:
-  void handleEvent(Signals) override;
-  void moveForward();
+  void HandleEvent(Signals) override;
+  void MoveForward();
   void moveUp();
-  void moveDown();
-  void moveRight();
-  void moveLeft();
-  void moveSnake();
+  void MoveDown();
+  void MoveRight();
+  void MoveLeft();
+  void MoveSnake();
   void Start();
   void Exit();
   void Pause();
   void GameOver();
 
-  void generateFood();
-  Point calculateNewHead(const Point& head);
-  bool isOutOfBounds(const Point& newHead);
-  bool isCollisionWithBody(const Point& newHead);
-  void handleFoodConsumption();
-  void updateGameBoard();
+  void GenerateFood();
+  Point CalculateNewHead(const Point& head);
+  bool OutOfBounds(const Point& newHead);
+  bool CollisionWithBody(const Point& newHead);
+  void HandleFoodConsumption();
+  void UpdateGameBoard();
   static long long GetCurrentTimeInMilliseconds();
 
  private:
-  long long lastUpdateTime;
+  long long last_update_time_;
   std::vector<Point> snake;
-  Point food;
-  int width, height;
+  Point food_;
+  int width_, height_;
   bool gameOver;
-  int score;
-  int level;
-  int speed;
+  int score_;
+  int level_;
+  int speed_;
   bool snake_moved;
   int accelerationSpeed;
   bool acceleration;
-  Direction currentDirection;
-  std::vector<std::vector<int>> gameBoard;
+  Direction current_direction_;
+  std::vector<std::vector<int>> game_board_;
 
   GameState currentState;
 
-  action fsm_table[4][8] = {
+  action fsm_table_[4][8] = {
       {nullptr, nullptr, nullptr, nullptr, nullptr, &SnakeModel::Exit,
        &SnakeModel::Start, nullptr},
-      {&SnakeModel::moveForward, &SnakeModel::moveUp, &SnakeModel::moveDown,
-       &SnakeModel::moveRight, &SnakeModel::moveLeft, &SnakeModel::Exit,
+      {&SnakeModel::MoveForward, &SnakeModel::moveUp, &SnakeModel::MoveDown,
+       &SnakeModel::MoveRight, &SnakeModel::MoveLeft, &SnakeModel::Exit,
        nullptr, &SnakeModel::Pause},
       {&SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::GameOver,
        &SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::Exit,

@@ -1,5 +1,5 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_SNAKE_BACKEND_SNAKE_MODEL_H_
+#define CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_SNAKE_BACKEND_SNAKE_MODEL_H_
 
 #include <chrono>
 #include <cstdlib>
@@ -31,61 +31,61 @@ class SnakeModel : public BrickGame {
   void ResetGame();
   void GetData(GameInfo_t& game) const override;
 
-  const std::deque<Point>& getSnake() const;
-  const Point& getFood() const;
-  Direction getCurrentDirection() const;
+  const std::deque<Point>& GetSnake() const;
+  const Point& GetFood() const;
+  Direction GetCurrentDirection() const;
   bool CurrentDirectionIs(Direction) const;
-  void setCurrentDirection(Direction);
+  void SetCurrentDirection(Direction);
 
-  GameState getCurrentState() const override;
+  GameState GetCurrentState() const override;
   void setCurrentState(GameState);
-  void handleEvent(Signals) override;
+  void HandleEvent(Signals) override;
   void setSnakeMoved(bool);
-  void setFoodEaten(bool);
+  void SetFoodEaten(bool);
   void setFood(int, int);
   void LoadSnakeRecord();
   void WriteSnakeRecord();
 
  private:
-  void moveForward();
-  void moveUp();
-  void moveDown();
-  void moveRight();
-  void moveLeft();
-  void moveSnake();
+  void MoveForward();
+  void MoveUp();
+  void MoveDown();
+  void MoveRight();
+  void MoveLeft();
+  void MoveSnake();
   void Start();
   void Exit();
   void Pause();
   void GameOver();
 
-  void generateFood();
-  Point calculateNewHead(const Point& head);
-  bool isOutOfBounds(const Point& newHead);
-  bool isCollisionWithBody(const Point& newHead);
-  void handleFoodConsumption();
-  void updateGameBoard();
+  void GenerateFood();
+  Point CalculateNewHead(const Point& head);
+  bool OutOfBounds(const Point& newHead);
+  bool CollisionWithBody(const Point& newHead);
+  void HandleFoodConsumption();
+  void UpdateGameBoard();
   static long long GetCurrentTimeInMilliseconds();
 
  private:
-  long long lastUpdateTime;
-  std::deque<Point> snake;
-  Point food;
-  int width, height;
-  int score;
-  int level;
-  int speed;
-  int record;
-  bool snake_moved, foodEaten;
-  Direction currentDirection;
-  std::vector<std::vector<int>> gameBoard;
+  long long last_update_time_;
+  std::deque<Point> snake_;
+  Point food_;
+  int width_, height_;
+  int score_;
+  int level_;
+  int speed_;
+  int record_;
+  bool snake_moved_, food_eaten_;
+  Direction current_direction_;
+  std::vector<std::vector<int>> game_board_;
 
   GameState currentState;
 
-  action fsm_table[4][8] = {
+  action fsm_table_[4][8] = {
       {nullptr, nullptr, nullptr, nullptr, nullptr, &SnakeModel::Exit,
        &SnakeModel::Start, nullptr},
-      {&SnakeModel::moveForward, &SnakeModel::moveUp, &SnakeModel::moveDown,
-       &SnakeModel::moveRight, &SnakeModel::moveLeft, &SnakeModel::Exit,
+      {&SnakeModel::MoveForward, &SnakeModel::MoveUp, &SnakeModel::MoveDown,
+       &SnakeModel::MoveRight, &SnakeModel::MoveLeft, &SnakeModel::Exit,
        nullptr, &SnakeModel::Pause},
       {&SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::GameOver,
        &SnakeModel::GameOver, &SnakeModel::GameOver, &SnakeModel::Exit,
@@ -96,4 +96,4 @@ class SnakeModel : public BrickGame {
 
 }  // namespace s21
 
-#endif  // MODEL_HPP
+#endif  // CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_SNAKE_BACKEND_SNAKE_MODEL_H_

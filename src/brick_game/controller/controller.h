@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_HPP
-#define CONTROLLER_HPP
+#ifndef CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_CONTROLLER_CONTROLLER_H_
+#define CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_CONTROLLER_CONTROLLER_H_
 
 #include <memory>
 #include <thread>
@@ -8,13 +8,13 @@
 #include "../tetris/tetris_model.h"
 
 namespace s21 {
-enum class MenuState { MENU, SNAKE_GAME, TETRIS_GAME, EXIT_MENU };
+enum class MenuState { kMenu, kSnakeGame, kTetrisGame, kExitMenu };
 
 class Controller {
  public:
   Controller();
-  void setGame(MenuState state);
-  void getData(GameInfo_t& game);
+  void SetGame(MenuState state);
+  void GetData(GameInfo_t& game);
   GameState GetCurrentGameState();
   std::unique_ptr<BrickGame>& GetModel();
   void GameProcessing(Signals);
@@ -24,4 +24,4 @@ class Controller {
 };
 
 }  // namespace s21
-#endif  // CONTROLLER_HPP
+#endif  // CPP3_BRICKGAME_2_0_1_SRC_BRICK_GAME_CONTROLLER_CONTROLLER_H_

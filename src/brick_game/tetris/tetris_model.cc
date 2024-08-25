@@ -13,62 +13,62 @@ void TetrisModel::ResetGame() {
 
 void TetrisModel::RecalibrateSignal(Signals new_signal) {
   switch (new_signal) {
-    case Signals::NONE:
+    case Signals::kNone:
       signal = None;
       break;
-    case Signals::UP:
+    case Signals::kUp:
       signal = Rotate;
       break;
-    case Signals::DOWN:
+    case Signals::kDown:
       signal = Down;
       break;
-    case Signals::LEFT:
+    case Signals::kLeft:
       signal = Left;
       break;
-    case Signals::RIGHT:
+    case Signals::kRight:
       signal = Right;
       break;
-    case Signals::ESC:
+    case Signals::kEsc:
       signal = ESC;
       break;
-    case Signals::ENTER:
+    case Signals::kEnter:
       signal = Enter;
       break;
-    case Signals::PAUSE:
+    case Signals::kPause:
       signal = Pause;
     default:
       break;
   }
 }
 
-void TetrisModel::handleEvent(Signals undef_signal) {
+void TetrisModel::HandleEvent(Signals undef_signal) {
   RecalibrateSignal(undef_signal);
   sigact(signal, &state, &tetris);
 }
 
-GameState TetrisModel::getCurrentState() const {
-  GameState new_sate = GameState::START;
+GameState TetrisModel::GetCurrentState() const {
+  GameState new_sate = GameState::kStart;
   switch (state) {
     case START:
-      new_sate = GameState::START;
+      new_sate = GameState::kStart;
       break;
     case SPAWN:
-      new_sate = GameState::PLAYING;
+      new_sate = GameState::kPlaying;
       break;
     case MOVING:
-      new_sate = GameState::PLAYING;
+      new_sate = GameState::kPlaying;
       break;
     case ATTACHING:
-      new_sate = GameState::PLAYING;
+      new_sate = GameState::kPlaying;
       break;
     case GAMEOVER:
-      new_sate = GameState::GAMEOVER;
+      new_sate = GameState::kGameOver;
       break;
     case EXIT_STATE:
-      new_sate = GameState::EXIT;
+      new_sate = GameState::kExit;
       break;
     case PAUSE:
-      new_sate = GameState::PAUSE;
+      new_sate = GameState::kPause;
       break;
     default:
       break;

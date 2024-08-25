@@ -4,12 +4,12 @@ namespace s21 {
 
 Controller::Controller() : model(nullptr) {}
 
-void Controller::setGame(MenuState state) {
+void Controller::SetGame(MenuState state) {
   switch (state) {
-    case MenuState::SNAKE_GAME:
+    case MenuState::kSnakeGame:
       model = std::make_unique<SnakeModel>();
       break;
-    case MenuState::TETRIS_GAME:
+    case MenuState::kTetrisGame:
       model = std::make_unique<TetrisModel>();
       break;
     default:
@@ -24,7 +24,7 @@ void Controller::getData(GameInfo_t& game) {
 }
 
 std::unique_ptr<BrickGame>& Controller::GetModel() { return model; }
-GameState Controller::GetCurrentGameState() { return model->getCurrentState(); }
-void Controller::GameProcessing(Signals signal) { model->handleEvent(signal); }
+GameState Controller::GetCurrentGameState() { return model->GetCurrentState(); }
+void Controller::GameProcessing(Signals signal) { model->HandleEvent(signal); }
 
 }  // namespace s21
